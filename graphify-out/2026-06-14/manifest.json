@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   "apps/web/components/examples-browser.tsx": {
-    "mtime": 1781452136.7433648,
-    "ast_hash": "ab9b2f62d8928e2678e746e086ccd628",
+    "mtime": 1781452317.9430115,
+    "ast_hash": "f21d93217bc8fc35709d09525fdb4465",
     "semantic_hash": ""
   },
   "apps/web/components/examples/columns.tsx": {
@@ -38,11 +38,6 @@
     "mtime": 1781435748.694,
     "ast_hash": "ea196024a984b3fd838312b7e3ea3dde",
     "semantic_hash": "ea196024a984b3fd838312b7e3ea3dde"
-  },
-  "apps/web/components/theme-toggle.tsx": {
-    "mtime": 1781449120.1069505,
-    "ast_hash": "3e601dcd64057e9bce447f1f0e03a32a",
-    "semantic_hash": ""
   },
   "apps/web/eslint.config.js": {
     "mtime": 1781435748.694,
