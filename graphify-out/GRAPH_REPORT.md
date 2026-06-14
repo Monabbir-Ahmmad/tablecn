@@ -5,12 +5,12 @@
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 1061 nodes · 1888 edges · 99 communities (74 shown, 25 thin omitted)
-- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 37 edges (avg confidence: 0.83)
+- 1060 nodes · 1887 edges · 105 communities (80 shown, 25 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 36 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3c843605`
+- Built from commit: `c6ae52c9`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -110,6 +110,12 @@
 - [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 97|Community 97]]
 - [[_COMMUNITY_Community 98|Community 98]]
+- [[_COMMUNITY_Community 99|Community 99]]
+- [[_COMMUNITY_Community 100|Community 100]]
+- [[_COMMUNITY_Community 101|Community 101]]
+- [[_COMMUNITY_Community 102|Community 102]]
+- [[_COMMUNITY_Community 103|Community 103]]
+- [[_COMMUNITY_Community 104|Community 104]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `cn()` - 136 edges
@@ -126,10 +132,10 @@
 ## Surprising Connections (you probably didn't know these)
 - `Swatch()` --calls--> `cn()`  [EXTRACTED]
   apps/web/components/theme-customizer.tsx → packages/ui/src/lib/utils.ts
-- `RootLayout()` --calls--> `cn()`  [EXTRACTED]
-  apps/web/app/layout.tsx → packages/ui/src/lib/utils.ts
 - `Callout()` --calls--> `cn()`  [EXTRACTED]
   apps/web/components/docs/callout.tsx → packages/ui/src/lib/utils.ts
+- `RootLayout()` --calls--> `cn()`  [EXTRACTED]
+  apps/web/app/layout.tsx → packages/ui/src/lib/utils.ts
 - `TreeExample()` --calls--> `useDataTable()`  [EXTRACTED]
   apps/web/components/examples/registry.tsx → packages/ui/src/components/data-table/use-data-table.ts
 - `ColumnVirtualizationExample()` --calls--> `useDataTable()`  [EXTRACTED]
@@ -154,15 +160,15 @@
 - **Core trio: useDataTable + DataTable + types contracts** — data_table_use_data_table_usedatatable, data_table_data_table_datatable, data_table_types_datatableconfig [INFERRED 0.85]
 - **Dynamic filter engine** — data_table_filter_fns_createdynamicfilterfn, data_table_filter_fns_createglobalfilterfn, data_table_filter_fns_mode_fns [INFERRED 0.85]
 
-## Communities (99 total, 25 thin omitted)
+## Communities (105 total, 25 thin omitted)
 
 ### Community 0 - "Feature Set & Roadmap"
 Cohesion: 0.07
 Nodes (34): Click-to-Copy, Column Filtering (row, modes, variants), Column & Row Ordering (DnD), Column Pinning / Freezing, Column Resizing, @dnd-kit (DnD ordering), Editing Modes (cell/row/table/modal/custom), CSV / Excel Export (+26 more)
 
 ### Community 1 - "Core Render & Injected Columns"
-Cohesion: 0.09
-Nodes (35): ContextMenu(), ContextMenuCheckboxItem(), ContextMenuContent(), ContextMenuItem(), ContextMenuLabel(), ContextMenuRadioItem(), ContextMenuSeparator(), ContextMenuShortcut() (+27 more)
+Cohesion: 0.20
+Nodes (22): ClickToCopy(), getColumnLabel(), DataTableColumnFilter(), FilterField(), DataTableBodyCellContent(), isColumnEditable(), LocalDraftEditor(), RowDraftEditor() (+14 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.09
@@ -170,11 +176,11 @@ Nodes (22): colMetaModule, columnOptions, dataTableProps, describe(), destructur
 
 ### Community 3 - "Demo App & Monorepo Wiring"
 Cohesion: 0.06
-Nodes (70): Shared base ESLint config, shadcn components.json config, useDataTable(), Web ESLint config (nextJsConfig), Root ESLint config, orgData (tree fixture), OrgNode data shape, User data shape (+62 more)
+Nodes (69): Shared base ESLint config, shadcn components.json config, useDataTable(), Web ESLint config (nextJsConfig), Root ESLint config, orgData (tree fixture), OrgNode data shape, User data shape (+61 more)
 
 ### Community 4 - "shadcn Primitives & Styling"
-Cohesion: 0.12
-Nodes (30): DropdownMenu(), DropdownMenuCheckboxItem(), DropdownMenuContent(), DropdownMenuItem(), DropdownMenuLabel(), DropdownMenuRadioGroup(), DropdownMenuRadioItem(), DropdownMenuSeparator() (+22 more)
+Cohesion: 0.11
+Nodes (34): DropdownMenu(), DropdownMenuCheckboxItem(), DropdownMenuContent(), DropdownMenuItem(), DropdownMenuLabel(), DropdownMenuRadioGroup(), DropdownMenuRadioItem(), DropdownMenuSeparator() (+26 more)
 
 ### Community 6 - "Cell Rendering & Highlighting"
 Cohesion: 0.14
@@ -217,8 +223,8 @@ Cohesion: 0.20
 Nodes (17): DataTable(), DataTableDropToGroupZone(), createRowActionsColumn(), DataTableAlertBanner(), FilterMode, GlobalFilterMode, CellEvent, DataTableConfig (+9 more)
 
 ### Community 16 - "CommandDialog"
-Cohesion: 0.06
-Nodes (63): Badge(), badgeVariants, Button(), buttonVariants, Calendar(), CalendarDayButton(), Checkbox(), Command() (+55 more)
+Cohesion: 0.17
+Nodes (14): Checkbox(), Command(), CommandEmpty(), CommandGroup(), CommandInput(), CommandItem(), CommandList(), CommandSeparator() (+6 more)
 
 ### Community 25 - "Checkbox"
 Cohesion: 0.05
@@ -436,25 +442,49 @@ Nodes (3): Numbering mode, Related, Row numbers
 Cohesion: 0.50
 Nodes (3): Related, Tree data, Usage
 
+### Community 99 - "Community 99"
+Cohesion: 0.16
+Nodes (15): ContextMenu(), ContextMenuCheckboxItem(), ContextMenuContent(), ContextMenuItem(), ContextMenuLabel(), ContextMenuRadioItem(), ContextMenuSeparator(), ContextMenuShortcut() (+7 more)
+
+### Community 100 - "Community 100"
+Cohesion: 0.20
+Nodes (13): Button(), buttonVariants, Calendar(), CalendarDayButton(), InputGroupAddon(), inputGroupAddonVariants, InputGroupButton(), inputGroupButtonVariants (+5 more)
+
+### Community 101 - "Community 101"
+Cohesion: 0.19
+Nodes (9): CommandDialog(), Dialog(), DialogContent(), DialogDescription(), DialogFooter(), DialogHeader(), DialogOverlay(), DialogTitle() (+1 more)
+
+### Community 102 - "Community 102"
+Cohesion: 0.23
+Nodes (10): Select(), SelectContent(), SelectGroup(), SelectItem(), SelectLabel(), SelectScrollDownButton(), SelectScrollUpButton(), SelectSeparator() (+2 more)
+
+### Community 103 - "Community 103"
+Cohesion: 0.25
+Nodes (5): Badge(), badgeVariants, Toggle(), toggleVariants, Highlight
+
+### Community 104 - "Community 104"
+Cohesion: 0.25
+Nodes (6): Popover(), PopoverContent(), PopoverDescription(), PopoverHeader(), PopoverTitle(), PopoverTrigger()
+
 ## Knowledge Gaps
-- **498 isolated node(s):** `metadata`, `geist`, `raleway`, `notoSerif`, `geistMono` (+493 more)
+- **497 isolated node(s):** `Column options`, `DataTable props`, `Icons`, `Localization`, `Table instance (`table.cnTable`)` (+492 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **25 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `cn()` connect `CommandDialog` to `Core Render & Injected Columns`, `shadcn Primitives & Styling`, `Cell Rendering & Highlighting`, `App Shell & Theming`, `Root & Web Config`, `Toolbar Controls`, `Community 11`, `Community 15`, `Community 82`?**
-  _High betweenness centrality (0.071) - this node is a cross-community bridge._
-- **Why does `Button()` connect `CommandDialog` to `Demo App & Monorepo Wiring`, `shadcn Primitives & Styling`, `Toolbar Controls`, `Community 15`, `Community 58`?**
-  _High betweenness centrality (0.009) - this node is a cross-community bridge._
+- **Why does `cn()` connect `Community 99` to `Core Render & Injected Columns`, `Community 100`, `Community 101`, `shadcn Primitives & Styling`, `Community 103`, `App Shell & Theming`, `Toolbar Controls`, `Community 104`, `Community 102`, `Cell Rendering & Highlighting`, `Root & Web Config`, `Community 11`, `Community 15`, `CommandDialog`, `Community 82`?**
+  _High betweenness centrality (0.058) - this node is a cross-community bridge._
 - **Why does `useDataTable()` connect `Demo App & Monorepo Wiring` to `shadcn Primitives & Styling`, `Root & Web Config`, `Community 15`, `Community 82`, `Community 30`?**
+  _High betweenness centrality (0.014) - this node is a cross-community bridge._
+- **Why does `Button()` connect `Community 100` to `Community 99`, `shadcn Primitives & Styling`, `Community 101`, `Community 102`, `Community 103`, `Demo App & Monorepo Wiring`, `Toolbar Controls`, `Community 15`, `CommandDialog`, `Community 58`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **What connects `metadata`, `geist`, `raleway` to the rest of the system?**
-  _501 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Column options`, `DataTable props`, `Icons` to the rest of the system?**
+  _500 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Feature Set & Roadmap` be split into smaller, more focused modules?**
   _Cohesion score 0.0748663101604278 - nodes in this community are weakly interconnected._
-- **Should `Core Render & Injected Columns` be split into smaller, more focused modules?**
-  _Cohesion score 0.09059233449477352 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
   _Cohesion score 0.08666666666666667 - nodes in this community are weakly interconnected._
+- **Should `Demo App & Monorepo Wiring` be split into smaller, more focused modules?**
+  _Cohesion score 0.0578386605783866 - nodes in this community are weakly interconnected._
