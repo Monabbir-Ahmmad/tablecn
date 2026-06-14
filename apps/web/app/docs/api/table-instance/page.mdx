@@ -1,0 +1,17 @@
+export const metadata = { title: "Table instance" }
+
+# Table instance (`table.cnTable`)
+
+`useDataTable` returns the standard TanStack table instance with one addition: a **`cnTable`** object holding tablecn's resolved configuration and UI state. Components read from it instead of prop drilling; you can read and call into it too.
+
+```tsx
+table.cnTable.beginCreate()       // open the create-row form
+table.cnTable.setDensity("compact")
+const isLoading = table.cnTable.isLoading
+```
+
+<ApiTable of="tableInstance" propLabel="Member" />
+
+<Callout variant="note" title="Everything else is TanStack">
+All standard instance methods — `getState`, `getRowModel`, `getColumn`, `setPageIndex`, `getFilteredRowModel`, `resetSorting`, … — are available directly on `table` as usual.
+</Callout>

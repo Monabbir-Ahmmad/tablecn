@@ -1,0 +1,50 @@
+export const metadata = { title: "Localization" }
+
+# Localization
+
+Every user-facing string in tablecn can be translated. Override any subset of strings with the `localization` option, which accepts a partial of the localization table.
+
+<Example slug="localization" />
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  localization: {
+    searchPlaceholder: "Buscar...",
+    noResults: "Sin resultados.",
+    paginationRange: (start, end, total) =>
+      `${start}–${end} de ${total}`,
+  },
+})
+
+return <DataTable table={table} />
+```
+
+Function-valued entries handle interpolation and plurals. For example, `paginationRange: (start, end, total) => ...` builds the range label from the current values.
+
+## App-wide defaults
+
+To set defaults for many tables at once, wrap a subtree in `DataTableConfigProvider`. Per-call `localization` options still override the provider.
+
+```tsx
+import { DataTableConfigProvider } from "@/components/ui/data-table"
+
+<DataTableConfigProvider localization={{ noResults: "Sin resultados." }}>
+  {children}
+</DataTableConfigProvider>
+```
+
+<Callout variant="note" title="Partial overrides">
+  You only need to supply the keys you want to change — everything else falls
+  back to the built-in defaults.
+</Callout>
+
+## Related
+
+- [Localization key reference](/docs/api/localization)
+- [Custom icons](/docs/guides/custom-icons)
+- [useDataTable options](/docs/api/use-data-table)

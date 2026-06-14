@@ -1,0 +1,51 @@
+export const metadata = { title: "Installation" }
+
+# Installation
+
+tablecn is distributed as a **shadcn registry** item. The CLI installs the table source into your project, pulls the shadcn primitives it depends on (in *your* configured style), and installs the npm packages it needs.
+
+## Prerequisites
+
+- A project already set up with **shadcn/ui** (a `components.json` with your style, base color, and `@/components/ui` aliases). If you don't have one, run `pnpm dlx shadcn@latest init` first.
+- **Tailwind CSS v4** and React 19 / Next.js (or any bundler that compiles your `components/`).
+
+<Callout variant="note" title="Any shadcn style works">
+tablecn only uses standard primitive APIs, so it adapts to any shadcn style (Sera, Vega, Nova, Luma, …) and base color. The primitives it depends on are installed in your style — nothing is overwritten unless you opt in.
+</Callout>
+
+## Add the component
+
+Run the shadcn CLI against the registry URL:
+
+```bash
+pnpm dlx shadcn@latest add https://tablecn.com/r/data-table.json
+```
+
+This single command:
+
+1. **Installs npm dependencies** — `@tanstack/react-table`, `@tanstack/react-virtual`, `@tanstack/match-sorter-utils`, `@dnd-kit/*`, `date-fns`, `papaparse`, `xlsx`, `radix-ui`, `@remixicon/react` (plus `@types/papaparse`).
+2. **Pulls the shadcn primitives** it uses (`badge`, `button`, `calendar`, `checkbox`, `command`, `context-menu`, `dialog`, `dropdown-menu`, `input`, `label`, `popover`, `select`, `skeleton`, `slider`, `table`, `tooltip`) in your style — and skips any you already have.
+3. **Writes the table** to `components/ui/data-table/`.
+4. **Injects design tokens** (`--highlight`, `--highlight-foreground`) into your `globals.css`.
+
+## Verify
+
+Import the public API from your `@/components/ui/data-table` alias:
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+```
+
+If `tsc` reports a missing `papaparse` declaration, install its types:
+
+```bash
+pnpm add -D @types/papaparse
+```
+
+<Callout variant="tip" title="react-day-picker v9+">
+If your shadcn `calendar.tsx` predates react-day-picker v9, its `classNames` may use the old `table` key (renamed to `month_grid`). Re-run `shadcn add calendar` or rename the key — this only affects the date filter variant.
+</Callout>
+
+## Next
+
+Head to the [Quick start](/docs/quick-start) to render your first table.

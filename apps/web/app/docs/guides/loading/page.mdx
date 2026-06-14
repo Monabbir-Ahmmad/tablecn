@@ -1,0 +1,50 @@
+export const metadata = { title: "Loading state" }
+
+# Loading state
+
+Pass `isLoading: true` to render skeleton rows and a progress bar in place of the data. Flip it back to `false` to reveal the real rows. This is especially useful with server-side data, where you toggle it around each fetch.
+
+<Example slug="loading" />
+
+## Usage
+
+Drive `isLoading` from your own state and toggle it however you like — here with `useState` and a button in `renderToolbarActions`:
+
+```tsx
+const [isLoading, setIsLoading] = useState(false)
+
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  isLoading,
+  renderToolbarActions: () => (
+    <Button
+      variant="outline"
+      size="sm"
+      onClick={() => setIsLoading((prev) => !prev)}
+    >
+      {isLoading ? "Show data" : "Show loading"}
+    </Button>
+  ),
+})
+
+return <DataTable table={table} />
+```
+
+## Reading the state
+
+You can read the current value back from the table instance:
+
+```tsx
+if (table.cnTable.isLoading) {
+  // skeletons + progress bar are showing
+}
+```
+
+<Callout variant="tip" title="Pairs well with server-side data">
+Set `isLoading` to `true` before a request and back to `false` when it resolves so users always see the skeletons while new pages or filtered results load.
+</Callout>
+
+## Related
+- [Server-side data](/docs/guides/server-side)

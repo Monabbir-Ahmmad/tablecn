@@ -1,0 +1,21 @@
+export const metadata = { title: "Localization" }
+
+# Localization
+
+Every user-facing string flows through a localization table. Override any subset per instance via `useDataTable({ localization })`, or app-wide via [`DataTableConfigProvider`](/docs/guides/custom-icons). Function-valued entries handle interpolation and plurals.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  localization: {
+    search: "Buscar",
+    rowsPerPage: "Filas por página",
+    paginationRange: (start, end, total) => `${start}–${end} de ${total}`,
+  },
+})
+```
+
+See the [Localization guide](/docs/guides/localization) for a full example. The complete key set and English defaults:
+
+<ApiTable of="localizationKeys" propLabel="Key" />

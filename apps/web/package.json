@@ -5,17 +5,22 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "api:build": "node scripts/build-api-docs.mjs",
     "registry:build": "node scripts/build-registry.mjs",
-    "build": "node scripts/build-registry.mjs && next build",
+    "build": "node scripts/build-api-docs.mjs && node scripts/build-registry.mjs && next build",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@mdx-js/loader": "^3.1.1",
+    "@mdx-js/react": "^3.1.1",
     "@monabbir/tablecn": "workspace:*",
+    "@next/mdx": "^16.2.9",
     "@remixicon/react": "^4.9.0",
     "@tanstack/react-table": "^8.21.3",
+    "@types/mdx": "^2.0.14",
     "cmdk": "^1.1.1",
     "date-fns": "^4.4.0",
     "lucide-react": "^1.18.0",
@@ -33,6 +38,7 @@
     "@workspace/eslint-config": "workspace:^",
     "@workspace/typescript-config": "workspace:*",
     "eslint": "^9",
+    "ts-morph": "^28.0.0",
     "typescript": "^5"
   }
 }

@@ -1,0 +1,46 @@
+export const metadata = { title: "Cell actions" }
+
+# Cell actions
+
+Add `renderCellActionMenuItems` to attach items to a right-click context menu on cells. Return `ContextMenuItem`s; they receive `{ cell, row, table }`.
+
+<Example slug="cell-actions" />
+
+## Usage
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  renderCellActionMenuItems: ({ cell }) => (
+    <ContextMenuItem
+      onSelect={() =>
+        navigator.clipboard.writeText(String(cell.getValue()))
+      }
+    >
+      Copy value
+    </ContextMenuItem>
+  ),
+})
+
+return <DataTable table={table} />
+```
+
+## Click to copy
+
+Enable click-to-copy on every cell with `enableClickToCopy: true`, or scope it to a single column through its `meta`.
+
+```tsx
+const columns = [
+  {
+    accessorKey: "email",
+    header: "Email",
+    meta: { enableClickToCopy: true },
+  },
+]
+```
+
+## Related
+
+- [Row actions](/docs/guides/row-actions)

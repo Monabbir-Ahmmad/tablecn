@@ -1,0 +1,37 @@
+export const metadata = { title: "Sticky header & footer" }
+
+# Sticky header & footer
+
+The header row (`enableStickyHeader`, default `true`) sticks to the top of the scroll surface, and the aggregation/footer row (`enableStickyFooter`, default `true`) sticks to the bottom. As you scroll through rows, both stay pinned in view.
+
+<Example slug="sticky" />
+
+## Bounded surface height
+
+Sticky behavior requires a **bounded** scroll surface — there is nothing to stick to if the table grows to fit all its rows. Give the surface a max height with `surfaceClassName` on `<DataTable />`:
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableStickyHeader: true,
+  enableStickyFooter: true,
+})
+
+return <DataTable table={table} surfaceClassName="max-h-[460px]" />
+```
+
+Once the surface is bounded and the content overflows, the header pins to the top and the footer pins to the bottom while the rows scroll between them.
+
+## Footer cells
+
+Footer cells are populated from each column's `footer` definition or from aggregation values. See [Grouping](/docs/guides/grouping) for how aggregation rows are produced.
+
+<Callout variant="note" title="Nothing to stick to?">
+If the header or footer is not sticking, the surface is probably not bounded. Confirm `surfaceClassName` sets a `max-h-*` (or other height constraint) and that the data actually overflows it.
+</Callout>
+
+## Related
+- [Grouping](/docs/guides/grouping)
+- [DataTable props](/docs/api/data-table-props)

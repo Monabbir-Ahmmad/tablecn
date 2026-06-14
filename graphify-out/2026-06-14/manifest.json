@@ -475,18 +475,18 @@
     "semantic_hash": ""
   },
   "apps/web/public/r/data-table.json": {
-    "mtime": 1781452179.335769,
-    "ast_hash": "a5e486f329e68cd43bfa0efefe88dc82",
+    "mtime": 1781453644.3094292,
+    "ast_hash": "2ab830751fd923c80fb55e24c79d44dd",
     "semantic_hash": ""
   },
   "apps/web/public/r/registry.json": {
-    "mtime": 1781452179.335769,
+    "mtime": 1781453644.3094292,
     "ast_hash": "b296be6b32a2d01b7aebc0aec719091b",
     "semantic_hash": ""
   },
   "apps/web/scripts/build-registry.mjs": {
-    "mtime": 1781450021.1766021,
-    "ast_hash": "d7237a616c87512d696c53c985767d4d",
+    "mtime": 1781453636.7842536,
+    "ast_hash": "1e1bc5c74b08f4ab8df04aadfdbd5b2d",
     "semantic_hash": ""
   },
   "packages/ui/src/components/data-table/config-context.tsx": {

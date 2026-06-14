@@ -1,0 +1,47 @@
+export const metadata = { title: "Column resizing" }
+
+# Column resizing
+
+Set `enableColumnResizing: true` to add a drag handle on each column's edge. Users drag the handle to widen or narrow a column.
+
+<Example slug="column-resizing" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableColumnResizing: true,
+})
+
+return <DataTable table={table} />
+```
+
+## Resize mode
+The resize mode defaults to `"onChange"`, so columns resize live as the handle moves. Pass TanStack's `columnResizeMode: "onEnd"` to defer the resize until the handle is released.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  enableColumnResizing: true,
+  columnResizeMode: "onEnd",
+})
+```
+
+## Width constraints
+Column widths come from `size`, `minSize`, and `maxSize` on the column definition.
+
+```tsx
+const columns = [
+  { accessorKey: "firstName", size: 200, minSize: 120, maxSize: 320 },
+]
+```
+
+<Callout variant="tip" title="Set sensible bounds">
+Define `minSize` and `maxSize` so users cannot collapse or stretch a column past a usable width.
+</Callout>
+
+## Related
+- [Column options](/docs/api/column-options)
+- [useDataTable options](/docs/api/use-data-table)

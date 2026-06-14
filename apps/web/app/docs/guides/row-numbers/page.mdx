@@ -1,0 +1,45 @@
+export const metadata = { title: "Row numbers" }
+
+# Row numbers
+
+Set `enableRowNumbers: true` to add a leading row-number column to the table.
+
+<Example slug="row-numbers" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableRowNumbers: true,
+})
+
+return <DataTable table={table} />
+```
+
+## Numbering mode
+
+`rowNumberMode` controls how the numbers are computed:
+
+- `"static"` (default) numbers the current view and is page-aware, so the first visible row on each page restarts the count appropriately.
+- `"original"` uses the source row index, so each row keeps the same number regardless of sorting or pagination.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableRowNumbers: true,
+  rowNumberMode: "original",
+})
+```
+
+<Callout variant="note" title="Pairs with row pinning">
+The row-number column is also where the pin toggle lives, so it works well alongside row pinning.
+</Callout>
+
+## Related
+
+- [useDataTable options](/docs/api/use-data-table)
+- [Table instance](/docs/api/table-instance)
+- [Row pinning](/docs/guides/row-pinning)

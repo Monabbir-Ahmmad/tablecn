@@ -1,0 +1,51 @@
+export const metadata = { title: "Custom icons" }
+
+# Custom icons
+
+Every glyph in tablecn is a named slot. Override any subset with the `icons` option, which accepts a partial. Defaults come from Remix Icon, but you can swap in any icon library.
+
+<Example slug="custom-icons" />
+
+Each value is a component that accepts a `className`, so any icon library works — here using `lucide-react`:
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+import { ArrowDown, ArrowUp, Search } from "lucide-react"
+
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  icons: {
+    sortAscending: ArrowUp,
+    sortDescending: ArrowDown,
+    search: Search,
+  },
+})
+
+return <DataTable table={table} />
+```
+
+## App-wide defaults
+
+For icon (and localization) defaults shared across many tables, wrap a subtree in `DataTableConfigProvider`.
+
+```tsx
+import { DataTableConfigProvider } from "@/components/ui/data-table"
+import { Search } from "lucide-react"
+
+<DataTableConfigProvider icons={{ search: Search }}>
+  {children}
+</DataTableConfigProvider>
+```
+
+<Callout variant="note" title="Precedence">
+  Values resolve in this order: built-in defaults → `DataTableConfigProvider` →
+  per-call options. Per-call `icons` always win.
+</Callout>
+
+## Related
+
+- [Icon slot reference](/docs/api/icons)
+- [Localization](/docs/guides/localization)
+- [useDataTable options](/docs/api/use-data-table)

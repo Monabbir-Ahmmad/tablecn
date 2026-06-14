@@ -1,0 +1,11 @@
+export const metadata = { title: "useDataTable options" }
+
+# useDataTable options
+
+`useDataTable(options)` accepts everything TanStack's [`TableOptions`](https://tanstack.com/table/v8/docs/api/core/table#options) accepts (controlled `state`, `on*Change`, `manual*` flags, `getRowId`, `getSubRows`, `initialState`, row models, …) **plus** the tablecn options below. The table below is generated from the source types; defaults come from the hook implementation.
+
+<ApiTable of="useDataTableOptions" propLabel="Option" />
+
+<Callout variant="note" title="Pass-through options">
+Options not listed here (e.g. `data`, `columns`, `state`, `manualPagination`, `rowCount`, `enableRowSelection`, `enableMultiSort`) are standard TanStack Table options and behave exactly as documented there.
+</Callout>

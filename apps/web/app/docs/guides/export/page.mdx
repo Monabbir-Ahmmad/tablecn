@@ -1,0 +1,38 @@
+export const metadata = { title: "Export" }
+
+# Export
+
+Set `enableExport: true` to add a CSV/Excel export menu to the toolbar.
+
+<Example slug="export" />
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableExport: true,
+  exportFileName: "users",
+  enableRowSelection: true,
+})
+
+return <DataTable table={table} />
+```
+
+`exportFileName` sets the base file name for downloads (default `"export"`).
+
+## What gets exported
+
+When row selection is on, users can export just the selected rows. Otherwise, the current filtered rows are exported.
+
+<Callout variant="tip" title="Combine with selection">
+  Enable `enableRowSelection` alongside `enableExport` to let users hand-pick
+  the rows they want in the file. See [Row selection](/docs/guides/row-selection).
+</Callout>
+
+## Related
+
+- [Row selection](/docs/guides/row-selection)
+- [useDataTable options](/docs/api/use-data-table)

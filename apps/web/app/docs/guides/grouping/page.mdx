@@ -1,0 +1,58 @@
+export const metadata = { title: "Grouping & aggregation" }
+
+# Grouping & aggregation
+
+Set `enableGrouping: true` to let users group rows by a column. Once enabled, users can drag a column header onto the drop-to-group zone, or pick **Group by** from a column's actions menu.
+
+<Example slug="grouping" />
+
+## Initial groups
+
+Seed the grouped state with `initialState.grouping` and expand all groups on first render with `initialState.expanded`.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableGrouping: true,
+  initialState: {
+    grouping: ["department"],
+    expanded: true,
+  },
+})
+
+return <DataTable table={table} />
+```
+
+## Aggregations
+
+Aggregations use the standard TanStack Table column options. Set `aggregationFn` to a built-in (`"sum"`, `"mean"`, ...) or a custom function, render the rolled-up value with `aggregatedCell`, and add a `footer` for a grand total.
+
+```tsx
+const columns = [
+  {
+    accessorKey: "salary",
+    header: "Salary",
+    aggregationFn: "sum",
+    aggregatedCell: ({ getValue }) => (
+      <strong>{formatCurrency(getValue<number>())}</strong>
+    ),
+    footer: ({ table }) => {
+      const total = table
+        .getRowModel()
+        .rows.reduce((sum, row) => sum + row.getValue<number>("salary"), 0)
+      return <strong>{formatCurrency(total)}</strong>
+    },
+  },
+]
+```
+
+<Callout variant="tip" title="Keep totals in view">
+Grouping pairs well with a pinned footer. Add `enableStickyFooter: true` so the grand total stays visible while scrolling long groups.
+</Callout>
+
+## Related
+
+- [Sticky header & footer](/docs/guides/sticky)
+- [Column options](/docs/api/column-options)

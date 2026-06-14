@@ -1,0 +1,67 @@
+export const metadata = { title: "Quick start" }
+
+# Quick start
+
+A minimal table is two pieces: **columns** (standard TanStack `ColumnDef`s) and a call to **`useDataTable`**, whose result you hand to **`<DataTable />`**.
+
+```tsx
+"use client"
+
+import * as React from "react"
+import type { ColumnDef } from "@tanstack/react-table"
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+type Person = { id: string; name: string; email: string; age: number }
+
+const data: Person[] = [
+  { id: "1", name: "Ada Lovelace", email: "ada@example.com", age: 36 },
+  { id: "2", name: "Alan Turing", email: "alan@example.com", age: 41 },
+  { id: "3", name: "Grace Hopper", email: "grace@example.com", age: 85 },
+]
+
+const columns: ColumnDef<Person>[] = [
+  { accessorKey: "name", header: "Name" },
+  { accessorKey: "email", header: "Email" },
+  { accessorKey: "age", header: "Age", meta: { align: "right" } },
+]
+
+export function PeopleTable() {
+  const table = useDataTable({
+    data,
+    columns,
+    getRowId: (row) => row.id,
+    initialState: { pagination: { pageSize: 10 } },
+  })
+
+  return <DataTable table={table} />
+}
+```
+
+That already gives you sorting, client pagination, a toolbar with global search, column visibility, and density controls:
+
+<Example slug="basic" />
+
+## Turning features on
+
+Every feature is an option on `useDataTable`. Flip a flag to enable it — for example, multi-column sorting, per-column filters, and row selection:
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableMultiSort: true,
+  defaultShowColumnFilters: true,
+  enableRowSelection: true,
+})
+```
+
+<Callout variant="tip" title="Memoize data and columns">
+Pass stable references for `data` and `columns` (e.g. via `React.useMemo` or module scope). Handing TanStack a new `columns` identity every render can reset state.
+</Callout>
+
+## Where to go next
+
+- [Usage](/docs/usage) — the options-in / instance-out model and `table.cnTable`.
+- [Guides](/docs/guides/sorting) — enable each feature, with live examples.
+- [API reference](/docs/api/use-data-table) — every option and its default.

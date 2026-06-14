@@ -1,0 +1,23 @@
+export const metadata = { title: "Icons" }
+
+# Icons
+
+Every glyph the table renders is a named slot. Override any subset via `useDataTable({ icons })` (or app-wide via [`DataTableConfigProvider`](/docs/guides/custom-icons)) to swap icon libraries or individual icons. Each value is an `IconComponent` — any component accepting a `className`.
+
+```tsx
+import { ArrowUp, ArrowDown, MoreVertical } from "lucide-react"
+
+const table = useDataTable({
+  data,
+  columns,
+  icons: {
+    sortAscending: ArrowUp,
+    sortDescending: ArrowDown,
+    columnActions: MoreVertical,
+  },
+})
+```
+
+See the [Custom icons guide](/docs/guides/custom-icons) for swapping the whole set. The complete slot list and Remix Icon defaults:
+
+<ApiTable of="iconSlots" propLabel="Slot" />

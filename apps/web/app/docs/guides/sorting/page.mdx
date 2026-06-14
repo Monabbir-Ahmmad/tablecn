@@ -1,0 +1,62 @@
+export const metadata = { title: "Sorting" }
+
+# Sorting
+
+Sorting is on by default. Click a column header to cycle ascending → descending → unsorted; the header shows the current direction and the column-actions menu offers explicit sort/clear items.
+
+<Example slug="basic" />
+
+## Multi-column sorting
+
+Enable `enableMultiSort` to sort by several columns at once (shift-click headers). An order badge indicates each column's position in the sort.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  enableMultiSort: true,
+  initialState: {
+    sorting: [
+      { id: "department", desc: false },
+      { id: "salary", desc: true },
+    ],
+  },
+})
+```
+
+<Example slug="sorting" />
+
+## Per-column control
+
+Sorting is standard TanStack, so the usual column knobs apply:
+
+- `enableSorting: false` — disable sorting for a column.
+- `sortDescFirst: true` — start from descending (handy for numeric columns).
+- `sortingFn` — a custom comparator.
+
+```tsx
+const columns: ColumnDef<Person>[] = [
+  { accessorKey: "id", header: "ID", enableSorting: false },
+  { accessorKey: "salary", header: "Salary", sortDescFirst: true },
+]
+```
+
+## Controlled sorting
+
+Pass `state.sorting` and `onSortingChange` to control it yourself — for example to sort on the server (`manualSorting: true`).
+
+```tsx
+const [sorting, setSorting] = React.useState([])
+const table = useDataTable({
+  data,
+  columns,
+  state: { sorting },
+  onSortingChange: setSorting,
+  manualSorting: true,
+})
+```
+
+## Related
+
+- [useDataTable options](/docs/api/use-data-table) — `enableMultiSort` and other sort flags pass through to TanStack.
+- TanStack Table [sorting guide](https://tanstack.com/table/v8/docs/guide/sorting).

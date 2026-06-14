@@ -1,0 +1,68 @@
+export const metadata = { title: "Virtualization" }
+
+# Virtualization
+
+Virtualization renders only the cells currently in view, keeping large tables fast. tablecn supports both row and column virtualization.
+
+## Row virtualization
+
+Set `enableRowVirtualization: true` to render only the visible rows. This is recommended once you have more than roughly 100 rows.
+
+<Example slug="virtualized" />
+
+With row virtualization on, the table surface becomes the scroll container, so give it a bounded height via `surfaceClassName` (it defaults to `max-h-[600px]`).
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableRowVirtualization: true,
+  surfaceClassName: "max-h-[600px]",
+  estimateRowHeight: 52,
+  virtualOverscan: 8,
+})
+
+return <DataTable table={table} />
+```
+
+Tune the behavior with `estimateRowHeight` (default `52`) and `virtualOverscan` (default `8`, the number of extra rows rendered above and below the viewport).
+
+<Callout variant="warning" title="Row drag-ordering is disabled">
+  Row virtualization is incompatible with row drag-ordering. If you need to
+  reorder rows by dragging, leave virtualization off. See
+  [Row ordering](/docs/guides/row-ordering).
+</Callout>
+
+## Column virtualization
+
+For very wide tables, set `enableColumnVirtualization: true` to virtualize columns. This applies fixed column widths and is not combined with column pinning or column ordering.
+
+<Example slug="column-virtualization" />
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableColumnVirtualization: true,
+  enablePagination: false,
+})
+
+return <DataTable table={table} />
+```
+
+<Callout variant="tip" title="Pair with no pagination">
+  Column virtualization is usually paired with `enablePagination: false` so all
+  rows scroll within one virtualized surface.
+</Callout>
+
+## Related
+
+- [Row ordering](/docs/guides/row-ordering)
+- [DataTable props](/docs/api/data-table-props)
+- [useDataTable options](/docs/api/use-data-table)

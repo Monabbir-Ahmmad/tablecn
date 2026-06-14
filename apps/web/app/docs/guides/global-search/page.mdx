@@ -1,0 +1,41 @@
+export const metadata = { title: "Global search" }
+
+# Global search
+
+An expandable global search box appears in the toolbar by default (`enableGlobalFilter: true`). It filters across all searchable columns at once, complementing the per-column filters.
+
+<Example slug="global-search" />
+
+## Search modes
+
+When `enableGlobalFilterModes: true` (the default), the search box shows a mode menu — fuzzy, contains, and more. The initial mode comes from `defaultGlobalFilterMode`, which defaults to `"fuzzy"`.
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableGlobalFilter: true,
+  enableGlobalFilterModes: true,
+  defaultGlobalFilterMode: "fuzzy",
+})
+return <DataTable table={table} />
+```
+
+## Disabling global search
+
+Set `enableGlobalFilter: false` to remove the search box from the toolbar.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableGlobalFilter: false,
+})
+```
+
+## Related
+- [Column filtering](/docs/guides/column-filtering)

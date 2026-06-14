@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 
 import { Button } from "@monabbir/tablecn/components/button"
 import { DataTableConfigProvider } from "@monabbir/tablecn/components/data-table"
@@ -75,10 +76,18 @@ export function ExamplesBrowser() {
             examples.
           </p>
         </div>
-        <ThemeCustomizer
-          iconLibrary={iconLibrary}
-          onIconLibraryChange={setIconLibrary}
-        />
+        <div className="flex items-center gap-2">
+          <Link
+            href="/docs"
+            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
+            Docs
+          </Link>
+          <ThemeCustomizer
+            iconLibrary={iconLibrary}
+            onIconLibraryChange={setIconLibrary}
+          />
+        </div>
       </header>
 
       <div className="flex flex-1 flex-col md:flex-row">

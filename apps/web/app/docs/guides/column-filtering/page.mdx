@@ -1,0 +1,63 @@
+export const metadata = { title: "Column filtering" }
+
+# Column filtering
+
+Each column can expose its own filter control in a per-column filter row. Toggle the row with the funnel icon in the toolbar, or have it open from the start with `defaultShowColumnFilters: true`.
+
+<Example slug="column-filters" />
+
+## Choosing a filter control
+
+The UI for each filter is chosen by the column's `meta.variant`. Supported variants are `"text"` (default), `"select"`, `"multi-select"`, `"checkbox"`, `"range"`, `"range-slider"`, `"date"`, and `"date-range"`.
+
+For `select` and `multi-select`, supply `meta.options` as an array of `{ label, value }`. If you omit them, the options are derived from the column's faceted unique values.
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+const columns = [
+  { accessorKey: "title", header: "Title", meta: { variant: "text" } },
+  {
+    accessorKey: "status",
+    header: "Status",
+    meta: {
+      variant: "select",
+      options: [
+        { label: "Active", value: "active" },
+        { label: "Archived", value: "archived" },
+      ],
+    },
+  },
+  { accessorKey: "score", header: "Score", meta: { variant: "range" } },
+]
+
+const table = useDataTable({ data, columns, getRowId: (row) => row.id })
+return <DataTable table={table} />
+```
+
+## Open the filter row by default
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  defaultShowColumnFilters: true,
+})
+```
+
+## Custom filter UI
+
+Use `meta.renderColumnFilter` as an escape hatch to render your own filter control for a column.
+
+## Match highlighting
+
+Matched substrings in cells are highlighted by default. Disable it for the whole table with `enableFilterMatchHighlighting: false`, or for a single column with `meta.disableHighlight: true`.
+
+## Disabling a column's filter
+
+Set `enableColumnFilter: false` on a column to remove its filter control entirely.
+
+## Related
+- [Filter modes](/docs/guides/filter-modes)
+- [Column options](/docs/api/column-options)

@@ -10,9 +10,11 @@
   "8": "Root & Web Config",
   "9": "Toolbar Controls",
   "10": "Workspace Packages & Build",
+  "11": "Community 11",
   "12": "CSV / Excel Export",
   "13": "TypeScript Config Presets",
   "14": "Column Pinning & Resizing Styles",
+  "15": "Community 15",
   "16": "CommandDialog",
   "17": "AGENTS.md Next.js Agent Rules",
   "18": "Column Actions Menu",
@@ -27,6 +29,7 @@
   "27": "getColumnSizeVars",
   "28": "getColumnWidthStyle",
   "29": "ExportOptions",
+  "30": "Community 30",
   "31": "IconComponent",
   "32": "CellEvent",
   "33": "DataTableFilterOption",
@@ -47,10 +50,12 @@
   "48": "Community 48",
   "49": "Community 49",
   "50": "Community 50",
+  "51": "Community 51",
   "52": "Community 52",
   "53": "Community 53",
   "54": "Community 54",
   "55": "Community 55",
   "56": "Community 56",
-  "57": "Community 57"
+  "57": "Community 57",
+  "58": "Community 58"
 }

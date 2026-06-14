@@ -1,0 +1,19 @@
+export const metadata = { title: "DataTable props" }
+
+# DataTable props
+
+`<DataTable />` is mostly driven by the instance from `useDataTable`. It accepts the presentational props below, and spreads any other `div` props onto the root element.
+
+<ApiTable of="dataTableProps" propLabel="Prop" />
+
+```tsx
+<DataTable
+  table={table}
+  surfaceClassName="max-h-[600px]"
+  pageSizeOptions={[10, 25, 50, 100]}
+/>
+```
+
+<Callout variant="tip" title="surfaceClassName">
+Use `surfaceClassName` to bound the scroll surface (e.g. `max-h-[600px]`) — required to engage the [sticky header & footer](/docs/guides/sticky) and to size a [virtualized](/docs/guides/virtualization) list.
+</Callout>

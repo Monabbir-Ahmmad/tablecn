@@ -1,0 +1,151 @@
+export const metadata = { title: "Editing" }
+
+# Editing
+
+Set `enableEditing: true` to make rows editable, then choose how editing is presented with `editDisplayMode`. Per-column behavior is configured through column `meta`.
+
+## Cell editing
+
+`editDisplayMode: "cell"` is the default. Click a cell to edit it inline and commit the new value with `onEditCellSave`.
+
+<Example slug="editing-cell" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableEditing: true,
+  editDisplayMode: "cell",
+  onEditCellSave: ({ row, column, value }) => {
+    setData((prev) =>
+      prev.map((r) =>
+        r.id === row.id ? { ...r, [column.id]: value } : r
+      )
+    )
+  },
+})
+
+return <DataTable table={table} />
+```
+
+## Row editing
+
+`editDisplayMode: "row"` edits a whole row at once with save/cancel controls. Persist the row with `onSaveRow`, then call `exit()` to leave edit mode.
+
+<Example slug="editing-row" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableEditing: true,
+  editDisplayMode: "row",
+  onSaveRow: ({ row, values, exit }) => {
+    setData((prev) =>
+      prev.map((r) => (r.id === row.id ? { ...r, ...values } : r))
+    )
+    exit()
+  },
+})
+
+return <DataTable table={table} />
+```
+
+## Table editing
+
+`editDisplayMode: "table"` keeps every editable cell in edit mode at all times, like a spreadsheet.
+
+<Example slug="editing-table" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableEditing: true,
+  editDisplayMode: "table",
+  onEditCellSave: ({ row, column, value }) => {
+    setData((prev) =>
+      prev.map((r) =>
+        r.id === row.id ? { ...r, [column.id]: value } : r
+      )
+    )
+  },
+})
+```
+
+## Modal editing & creating
+
+`editDisplayMode: "modal"` edits (and creates) rows in a dialog. Use `onSaveRow` for edits and `onCreateRow` for new rows; both receive `exit()` to close the dialog. Seed the create form with `createRowDefaults`, and open it from the toolbar via `table.cnTable.beginCreate()`.
+
+<Example slug="editing-modal" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableEditing: true,
+  editDisplayMode: "modal",
+  createRowDefaults: { name: "", role: "member" },
+  onSaveRow: ({ row, values, exit }) => {
+    setData((prev) =>
+      prev.map((r) => (r.id === row.id ? { ...r, ...values } : r))
+    )
+    exit()
+  },
+  onCreateRow: ({ values, exit }) => {
+    setData((prev) => [...prev, { id: crypto.randomUUID(), ...values }])
+    exit()
+  },
+  renderToolbarActions: ({ table }) => (
+    <Button size="sm" onClick={() => table.cnTable.beginCreate()}>
+      New row
+    </Button>
+  ),
+})
+```
+
+## Per-column editing config
+
+Configure editors on each column's `meta`:
+
+- `editVariant: "text" | "number" | "select"` — the input type.
+- `editSelectOptions` — options for the `"select"` variant.
+- `validate: (value) => string | undefined` — return a message to block the save.
+- `enableEditing: false` — lock a single column.
+
+```tsx
+const columns = [
+  {
+    accessorKey: "role",
+    header: "Role",
+    meta: {
+      editVariant: "select",
+      editSelectOptions: ["admin", "member", "viewer"],
+    },
+  },
+  {
+    accessorKey: "email",
+    header: "Email",
+    meta: {
+      editVariant: "text",
+      validate: (value) =>
+        /.+@.+\..+/.test(value) ? undefined : "Enter a valid email",
+    },
+  },
+  {
+    accessorKey: "id",
+    header: "ID",
+    meta: { enableEditing: false },
+  },
+]
+```
+
+## Related
+
+- [Column options](/docs/api/column-options)
+- [Table instance](/docs/api/table-instance)
+- [Row actions](/docs/guides/row-actions)

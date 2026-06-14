@@ -1,0 +1,62 @@
+export const metadata = { title: "Server-side data" }
+
+# Server-side data
+
+When your data lives on a server, hand pagination, sorting, and filtering off to it. All TanStack `manual*` flags pass through tablecn.
+
+<Example slug="server-side" />
+
+## Server pagination
+
+Set `manualPagination: true`, supply the total `rowCount`, control `state.pagination`, and handle `onPaginationChange`. Use `isLoading` to show a loading state while fetching.
+
+```tsx
+import { useState } from "react"
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 })
+const { data, rowCount, isFetching } = useUsers(pagination)
+
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  manualPagination: true,
+  rowCount,
+  state: { pagination },
+  onPaginationChange: setPagination,
+  isLoading: isFetching,
+})
+
+return <DataTable table={table} />
+```
+
+## Server sorting and filtering
+
+The same pattern applies to other operations:
+
+- Sorting: `manualSorting: true` + `state.sorting` + `onSortingChange`.
+- Filtering: `manualFiltering: true` + `state.columnFilters` / `globalFilter`.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  manualSorting: true,
+  state: { sorting },
+  onSortingChange: setSorting,
+  manualFiltering: true,
+})
+```
+
+<Callout variant="warning" title="Facets are not auto-computed">
+  In manual filtering, faceted option lists and min/max values are not computed
+  from the data — the server supplies the rows, so you must provide facet
+  options yourself if you use them.
+</Callout>
+
+## Related
+
+- [Loading state](/docs/guides/loading)
+- [useDataTable options](/docs/api/use-data-table)

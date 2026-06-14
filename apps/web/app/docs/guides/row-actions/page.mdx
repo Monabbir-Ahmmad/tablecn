@@ -1,0 +1,40 @@
+export const metadata = { title: "Row actions" }
+
+# Row actions
+
+Provide `renderRowActions` to add a trailing actions column. It receives `{ row, table }` and returns whatever controls you need — for example a delete button.
+
+<Example slug="row-actions" />
+
+## Usage
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  renderRowActions: ({ row }) => (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() =>
+        setData((prev) => prev.filter((r) => r.id !== row.original.id))
+      }
+    >
+      <RiDeleteBinLine />
+      <span className="sr-only">Delete</span>
+    </Button>
+  ),
+})
+
+return <DataTable table={table} />
+```
+
+<Callout variant="tip" title="Combine with editing">
+Row actions sit alongside editing controls — wire up an edit button here to start row editing programmatically.
+</Callout>
+
+## Related
+
+- [Cell actions](/docs/guides/cell-actions)
+- [Editing](/docs/guides/editing)

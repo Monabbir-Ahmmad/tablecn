@@ -1,0 +1,21 @@
+export const metadata = { title: "Column options" }
+
+# Column options
+
+Per-column configuration lives on the standard TanStack `columnDef.meta` object, which tablecn augments with the fields below (fully typed wherever `meta` is read).
+
+```tsx
+const columns: ColumnDef<Person>[] = [
+  {
+    accessorKey: "role",
+    header: "Role",
+    meta: { variant: "select", options: ROLE_OPTIONS, editVariant: "select" },
+  },
+]
+```
+
+<ApiTable of="columnOptions" propLabel="meta key" />
+
+<Callout variant="note" title="Standard column options still apply">
+`accessorKey`, `header`, `cell`, `footer`, `size`, `enableSorting`, `enableColumnFilter`, `aggregationFn`, `aggregatedCell`, `sortDescFirst`, and the rest are standard TanStack [column defs](https://tanstack.com/table/v8/docs/api/core/column-def).
+</Callout>

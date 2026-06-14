@@ -1,0 +1,77 @@
+export const metadata = { title: "Row selection" }
+
+# Row selection
+
+Set `enableRowSelection: true` to add a leading checkbox column. When rows are selected, a selection alert banner appears showing the current count.
+
+`enableRowSelection` accepts a boolean or a `(row) => boolean` predicate (standard TanStack), so you can allow selecting only certain rows.
+
+<Callout variant="tip" title="Stable selection keys">
+Always provide `getRowId` so selection keys stay stable across re-renders, sorting, and pagination. Without it, selection is keyed by row index and can drift.
+</Callout>
+
+## row-selection
+
+Multi-row selection with a select-all checkbox in the header.
+
+<Example slug="row-selection" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableRowSelection: true,
+})
+
+return <DataTable table={table} />
+```
+
+Read the current selection at any time:
+
+```tsx
+const selected = table.getState().rowSelection
+```
+
+Or control it from your own state:
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableRowSelection: true,
+  state: { rowSelection },
+  onRowSelectionChange: setRowSelection,
+})
+```
+
+You can also gate selection per row with a predicate:
+
+```tsx
+enableRowSelection: (row) => row.original.status !== "archived"
+```
+
+## single-selection
+
+For radio-like single selection (no select-all checkbox), add `enableMultiRowSelection: false`.
+
+<Example slug="single-selection" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableRowSelection: true,
+  enableMultiRowSelection: false,
+})
+
+return <DataTable table={table} />
+```
+
+## Related
+
+- [useDataTable options](/docs/api/use-data-table)
+- [Table instance](/docs/api/table-instance)
+- [Export](/docs/guides/export)

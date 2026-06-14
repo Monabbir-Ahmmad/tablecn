@@ -1,0 +1,93 @@
+export const metadata = { title: "Usage" }
+
+# Usage
+
+tablecn has one core idea: **options in, instance out.**
+
+```tsx
+const table = useDataTable(options) // enriched TanStack instance
+return <DataTable table={table} />  // renders it
+```
+
+## The hook
+
+`useDataTable(options)` wraps TanStack's `useReactTable`. It:
+
+- supplies default row models (core, sorted, filtered, faceted, grouped, expanded, paginated) — each overridable;
+- injects display columns when needed (selection, row numbers, drag handle, expand, row actions);
+- merges localization and icons (built-in defaults → [`DataTableConfigProvider`](/docs/guides/custom-icons) → per-call options);
+- attaches all presentation state + feature flags to the instance as **`table.cnTable`**.
+
+Because it extends TanStack's `TableOptions`, **anything TanStack accepts passes through**: controlled `state`, `on*Change` handlers, `manual*` server-side flags, `getRowId`, `getSubRows`, `initialState`, and so on.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  // tablecn options
+  enableGrouping: true,
+  enableExport: true,
+  // standard TanStack options, passed straight through
+  state: { sorting },
+  onSortingChange: setSorting,
+  manualPagination: true,
+  rowCount: total,
+})
+```
+
+## The component
+
+`<DataTable table={table} />` reads `table.cnTable` and renders the full layout: top toolbar → alert banner → drop-to-group zone → bordered scroll surface (sticky header, optional filter row, body, optional sticky footer) → pagination.
+
+It takes a few presentational props — see [DataTable props](/docs/api/data-table-props). The most common is `surfaceClassName`, used to bound the scroll surface for sticky headers or virtualization:
+
+```tsx
+<DataTable table={table} surfaceClassName="max-h-[600px]" />
+```
+
+## The instance: `table.cnTable`
+
+Sub-components read configuration and UI state from `table.cnTable` rather than via props. You can use it too — for toolbar actions, custom layouts, or programmatic control:
+
+```tsx
+renderToolbarActions: ({ table }) => (
+  <Button onClick={() => table.cnTable.beginCreate()}>New row</Button>
+)
+```
+
+It also exposes density (`density`, `setDensity`), fullscreen, filter visibility, editing state (`beginRowEdit`, `cancelEdit`, …), and every feature flag. See the full [Table instance](/docs/api/table-instance) reference.
+
+## Columns
+
+Columns are standard TanStack [`ColumnDef`](https://tanstack.com/table/v8/docs/guide/column-defs)s. tablecn reads extra per-column configuration from **`columnDef.meta`** — filter variant, alignment, edit variant, aggregation labels, click-to-copy, and more. See [Column options](/docs/api/column-options).
+
+```tsx
+const columns: ColumnDef<Person>[] = [
+  {
+    accessorKey: "status",
+    header: "Status",
+    meta: { variant: "multi-select", options: STATUS_OPTIONS },
+  },
+  {
+    accessorKey: "salary",
+    header: "Salary",
+    aggregationFn: "sum",
+    meta: { align: "right", variant: "range-slider", editVariant: "number" },
+  },
+]
+```
+
+## App-wide defaults
+
+Wrap a subtree in `DataTableConfigProvider` to set default `icons` and `localization` for every table inside it, without editing each call site:
+
+```tsx
+import { DataTableConfigProvider } from "@/components/ui/data-table"
+
+<DataTableConfigProvider localization={spanish} icons={lucideIcons}>
+  <App />
+</DataTableConfigProvider>
+```
+
+Precedence is: built-in defaults → provider → per-call `useDataTable({ localization, icons })`.

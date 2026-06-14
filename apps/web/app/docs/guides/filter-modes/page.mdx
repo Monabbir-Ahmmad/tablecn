@@ -1,0 +1,59 @@
+export const metadata = { title: "Filter modes" }
+
+# Filter modes
+
+Filter modes let users change how a column's filter is applied — for example matching with Contains, Starts with, Equals, Between, Greater than, or Empty. With `enableColumnFilterModes: true` (the default) each filter field shows a mode menu offering the modes appropriate to that column's `meta.variant`.
+
+<Example slug="filter-modes" />
+
+## Setting the initial mode
+
+Set a column's starting mode with `meta.filterMode`.
+
+```tsx
+import { DataTable, useDataTable } from "@/components/ui/data-table"
+
+const columns = [
+  {
+    accessorKey: "title",
+    header: "Title",
+    meta: { variant: "text", filterMode: "startsWith" },
+  },
+  {
+    accessorKey: "score",
+    header: "Score",
+    meta: { variant: "range", filterMode: "between" },
+  },
+]
+
+const table = useDataTable({ data, columns, getRowId: (row) => row.id })
+return <DataTable table={table} />
+```
+
+## Toggling the mode menu
+
+`enableColumnFilterModes` is `true` by default. Turn it off globally to hide every mode menu, or override it per column with `meta.enableColumnFilterModes`.
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableColumnFilterModes: false,
+})
+```
+
+```tsx
+const columns = [
+  // mode menu hidden for this column only
+  { accessorKey: "id", header: "ID", meta: { enableColumnFilterModes: false } },
+]
+```
+
+## Localizing mode labels
+
+Mode menu labels are localizable via `localization.filterModes`.
+
+## Related
+- [Column filtering](/docs/guides/column-filtering)
+- [Localization](/docs/api/localization)

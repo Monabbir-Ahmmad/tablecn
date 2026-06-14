@@ -1,0 +1,43 @@
+export const metadata = { title: "Density" }
+
+# Density
+
+Density controls the vertical padding of table rows. tablecn ships three densities: `"comfortable"` (the default), `"compact"`, and `"spacious"`. A toolbar button cycles through them, so end users can pick the row height that suits them.
+
+<Example slug="density" />
+
+## Usage
+
+Set the initial density with `defaultDensity`:
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  defaultDensity: "compact",
+})
+
+return <DataTable table={table} />
+```
+
+## Reading and setting density
+
+You can read or change the current density at any time through the table instance:
+
+```tsx
+// current density: "comfortable" | "compact" | "spacious"
+const density = table.cnTable.density
+
+// switch to compact programmatically
+table.cnTable.setDensity("compact")
+```
+
+This is handy when you want to drive density from your own controls instead of the built-in toolbar button.
+
+<Callout variant="tip" title="Persisting density">
+`density` is plain state on the table instance, so you can mirror it into local storage or a query param and restore it via `defaultDensity` on the next load.
+</Callout>
+
+## Related
+- [Table instance](/docs/api/table-instance)

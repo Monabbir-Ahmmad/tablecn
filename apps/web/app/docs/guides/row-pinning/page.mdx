@@ -1,0 +1,31 @@
+export const metadata = { title: "Row pinning" }
+
+# Row pinning
+
+Set `enableRowPinning: true` to add a pin toggle inside the row-number column. Pinned rows stick to the top while you scroll the rest of the table.
+
+Because the toggle lives in the row-number column, row pinning pairs with `enableRowNumbers: true`.
+
+<Example slug="row-pinning" />
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  getRowId: (row) => row.id,
+  enableRowNumbers: true,
+  enableRowPinning: true,
+})
+
+return <DataTable table={table} />
+```
+
+<Callout variant="tip" title="Enable row numbers">
+Turn on `enableRowNumbers` so the pin toggle has a column to live in.
+</Callout>
+
+## Related
+
+- [useDataTable options](/docs/api/use-data-table)
+- [Table instance](/docs/api/table-instance)
+- [Row numbers](/docs/guides/row-numbers)
