@@ -5,7 +5,8 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "env": ["GITHUB_PAGES"],
+      "outputs": [".next/**", "!.next/cache/**", "out/**"]
     },
     "lint": {
       "dependsOn": ["^lint"]

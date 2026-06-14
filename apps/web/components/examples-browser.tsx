@@ -1,16 +1,12 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
 
 import { Button } from "@monabbir/tablecn/components/button"
-import { DataTableConfigProvider } from "@monabbir/tablecn/components/data-table"
 import { cn } from "@monabbir/tablecn/lib/utils"
 
 import { EXAMPLES, type ExampleDef } from "./examples/registry"
-import { lucideIcons, type IconLibrary } from "./examples/icon-sets"
-import { ThemeCustomizer } from "./theme-customizer"
-import { readPrefs } from "@/lib/theme-store"
+import { SiteHeader } from "./site-header"
 
 const CATEGORY_ORDER = [
   "Basics",
@@ -39,14 +35,6 @@ function groupByCategory(items: ExampleDef[]) {
 
 export function ExamplesBrowser() {
   const [slug, setSlug] = React.useState(EXAMPLES[0]!.slug)
-  // Default to "remix" for SSR + first client render to avoid an icon
-  // hydration mismatch; sync the saved preference after mount.
-  const [iconLibrary, setIconLibrary] = React.useState<IconLibrary>("remix")
-  React.useEffect(() => {
-    const saved = readPrefs().icons
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (saved !== "remix") setIconLibrary(saved)
-  }, [])
   const groups = React.useMemo(() => groupByCategory(EXAMPLES), [])
   const active = EXAMPLES.find((e) => e.slug === slug) ?? EXAMPLES[0]!
   const ActiveComponent = active.Component
@@ -68,27 +56,7 @@ export function ExamplesBrowser() {
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="flex items-center justify-between gap-4 border-b px-4 py-3 md:px-6">
-        <div>
-          <h1 className="text-base font-semibold tracking-tight">tablecn</h1>
-          <p className="text-xs text-muted-foreground">
-            A shadcn/ui data table with Material React Table parity — feature
-            examples.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Link
-            href="/docs"
-            className="rounded-md px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Docs
-          </Link>
-          <ThemeCustomizer
-            iconLibrary={iconLibrary}
-            onIconLibraryChange={setIconLibrary}
-          />
-        </div>
-      </header>
+      <SiteHeader />
 
       <div className="flex flex-1 flex-col md:flex-row">
         <nav className="shrink-0 overflow-y-auto border-b md:w-60 md:border-e md:border-b-0">
@@ -127,11 +95,7 @@ export function ExamplesBrowser() {
             <p className="text-sm text-muted-foreground">{active.description}</p>
           </div>
           {/* Remount per example so each starts from a clean state. */}
-          <DataTableConfigProvider
-            icons={iconLibrary === "lucide" ? lucideIcons : undefined}
-          >
-            <ActiveComponent key={active.slug} />
-          </DataTableConfigProvider>
+          <ActiveComponent key={active.slug} />
         </main>
       </div>
     </div>
