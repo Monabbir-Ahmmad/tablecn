@@ -410,6 +410,34 @@ export const useDataTableOptions: ApiMember[] = [
     "description": "Extra rows rendered above/below the viewport. Default 8."
   },
   {
+    "name": "rowVirtualizerOptions",
+    "type": "RowVirtualizerOptions<TData>",
+    "required": false,
+    "default": null,
+    "description": "Partial `@tanstack/react-virtual` options merged into the row virtualizer (overrides the built-in `count`/`estimateSize`/`overscan`/`measureElement`). Accepts an object or a `({ table }) => options` function."
+  },
+  {
+    "name": "columnVirtualizerOptions",
+    "type": "ColumnVirtualizerOptions<TData>",
+    "required": false,
+    "default": null,
+    "description": "Partial `@tanstack/react-virtual` options merged into the column virtualizer. Accepts an object or a `({ table }) => options` function."
+  },
+  {
+    "name": "rowVirtualizerInstanceRef",
+    "type": "React.RefObject<DataTableRowVirtualizer | null>",
+    "required": false,
+    "default": null,
+    "description": "Ref populated with the row `Virtualizer` instance for imperative control (e.g. `scrollToIndex`). Only set when `enableRowVirtualization`."
+  },
+  {
+    "name": "columnVirtualizerInstanceRef",
+    "type": "React.RefObject<DataTableColumnVirtualizer | null>",
+    "required": false,
+    "default": null,
+    "description": "Ref populated with the column `Virtualizer` instance. Only set when `enableColumnVirtualization`."
+  },
+  {
     "name": "enableExport",
     "type": "boolean",
     "required": false,
@@ -1189,6 +1217,34 @@ export const tableInstance: ApiMember[] = [
     "name": "virtualOverscan",
     "type": "number",
     "required": true,
+    "default": null,
+    "description": ""
+  },
+  {
+    "name": "rowVirtualizerOptions",
+    "type": "RowVirtualizerOptions<TData>",
+    "required": false,
+    "default": null,
+    "description": ""
+  },
+  {
+    "name": "columnVirtualizerOptions",
+    "type": "ColumnVirtualizerOptions<TData>",
+    "required": false,
+    "default": null,
+    "description": ""
+  },
+  {
+    "name": "rowVirtualizerInstanceRef",
+    "type": "React.RefObject<DataTableRowVirtualizer | null>",
+    "required": false,
+    "default": null,
+    "description": ""
+  },
+  {
+    "name": "columnVirtualizerInstanceRef",
+    "type": "React.RefObject<DataTableColumnVirtualizer | null>",
+    "required": false,
     "default": null,
     "description": ""
   },

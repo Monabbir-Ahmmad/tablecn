@@ -123,4 +123,8 @@ export type {
   EditingCell,
   RowEvent,
   CellEvent,
+  DataTableRowVirtualizer,
+  DataTableColumnVirtualizer,
+  RowVirtualizerOptions,
+  ColumnVirtualizerOptions,
 } from "./types"

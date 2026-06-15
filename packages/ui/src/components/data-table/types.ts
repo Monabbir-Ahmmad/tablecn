@@ -8,11 +8,40 @@ import type {
   TableOptions,
 } from "@tanstack/react-table"
 
+import type { Virtualizer, VirtualizerOptions } from "@tanstack/react-virtual"
+
 import type { DataTableLocalization } from "./localization"
 import type { FilterMode, GlobalFilterMode } from "./filter-fns"
 import type { DataTableIcons } from "./icons"
 
 export type Density = "compact" | "comfortable" | "spacious"
+
+/** The `@tanstack/react-virtual` instance powering body-row virtualization. */
+export type DataTableRowVirtualizer = Virtualizer<
+  HTMLDivElement,
+  HTMLTableRowElement
+>
+/** The `@tanstack/react-virtual` instance powering column virtualization. */
+export type DataTableColumnVirtualizer = Virtualizer<
+  HTMLDivElement,
+  HTMLTableCellElement
+>
+
+/** A value, or a function of the table instance returning that value. */
+type ValueOrFunc<TData extends RowData, TValue> =
+  | TValue
+  | ((props: { table: DataTableInstance<TData> }) => TValue)
+
+/** Partial passthrough merged into the row `useVirtualizer` call. */
+export type RowVirtualizerOptions<TData extends RowData> = ValueOrFunc<
+  TData,
+  Partial<VirtualizerOptions<HTMLDivElement, HTMLTableRowElement>>
+>
+/** Partial passthrough merged into the column `useVirtualizer` call. */
+export type ColumnVirtualizerOptions<TData extends RowData> = ValueOrFunc<
+  TData,
+  Partial<VirtualizerOptions<HTMLDivElement, HTMLTableCellElement>>
+>
 
 /** Filter UI variants (full set wired in Phase 2; Phase 1 ships "text"). */
 export type FilterVariant =
@@ -252,6 +281,10 @@ export interface DataTableConfig<TData extends RowData> {
   enableColumnVirtualization: boolean
   estimateRowHeight: number
   virtualOverscan: number
+  rowVirtualizerOptions?: RowVirtualizerOptions<TData>
+  columnVirtualizerOptions?: ColumnVirtualizerOptions<TData>
+  rowVirtualizerInstanceRef?: React.RefObject<DataTableRowVirtualizer | null>
+  columnVirtualizerInstanceRef?: React.RefObject<DataTableColumnVirtualizer | null>
   enableExport: boolean
   exportFileName?: string
   enableStickyHeader: boolean
@@ -463,6 +496,19 @@ export interface UseDataTableOptions<TData extends RowData> extends Omit<
   estimateRowHeight?: number
   /** Extra rows rendered above/below the viewport. Default 8. */
   virtualOverscan?: number
+  /** Partial `@tanstack/react-virtual` options merged into the row virtualizer
+   *  (overrides the built-in `count`/`estimateSize`/`overscan`/`measureElement`).
+   *  Accepts an object or a `({ table }) => options` function. */
+  rowVirtualizerOptions?: RowVirtualizerOptions<TData>
+  /** Partial `@tanstack/react-virtual` options merged into the column
+   *  virtualizer. Accepts an object or a `({ table }) => options` function. */
+  columnVirtualizerOptions?: ColumnVirtualizerOptions<TData>
+  /** Ref populated with the row `Virtualizer` instance for imperative control
+   *  (e.g. `scrollToIndex`). Only set when `enableRowVirtualization`. */
+  rowVirtualizerInstanceRef?: React.RefObject<DataTableRowVirtualizer | null>
+  /** Ref populated with the column `Virtualizer` instance. Only set when
+   *  `enableColumnVirtualization`. */
+  columnVirtualizerInstanceRef?: React.RefObject<DataTableColumnVirtualizer | null>
   /** Show a CSV/Excel export menu in the toolbar. */
   enableExport?: boolean
   /** Base file name for exports (no extension). Default "export". */

@@ -136,6 +136,10 @@ export function DataTable<TData extends RowData>({
     renderDetailPanel,
     enableRowVirtualization,
     enableColumnVirtualization,
+    rowVirtualizerOptions,
+    columnVirtualizerOptions,
+    rowVirtualizerInstanceRef,
+    columnVirtualizerInstanceRef,
     enableStickyHeader,
     enablePagination,
     positionPagination,
@@ -435,6 +439,16 @@ export function DataTable<TData extends RowData>({
     }
   }
 
+  // User-supplied passthrough options, resolved from their value-or-function form.
+  const rowVOptions =
+    typeof rowVirtualizerOptions === "function"
+      ? rowVirtualizerOptions({ table })
+      : rowVirtualizerOptions
+  const columnVOptions =
+    typeof columnVirtualizerOptions === "function"
+      ? columnVirtualizerOptions({ table })
+      : columnVirtualizerOptions
+
   const rowVirtualizer = useVirtualizer({
     count: virtualItems.length,
     getScrollElement: () => gridRef.current,
@@ -444,6 +458,7 @@ export function DataTable<TData extends RowData>({
       typeof window !== "undefined"
         ? (el) => el?.getBoundingClientRect().height ?? 0
         : undefined,
+    ...rowVOptions,
   })
 
   // Horizontal virtualizer for wide tables. When off, count is 0 and the
@@ -455,6 +470,16 @@ export function DataTable<TData extends RowData>({
     getScrollElement: () => gridRef.current,
     estimateSize: (index) => leafColumns[index]?.getSize() ?? 150,
     overscan: table.cnTable.virtualOverscan,
+    ...columnVOptions,
+  })
+
+  // Expose the virtualizer instances for imperative control (e.g. scrollToIndex).
+  React.useEffect(() => {
+    if (rowVirtualizerInstanceRef) rowVirtualizerInstanceRef.current = rowVirtualizer
+  })
+  React.useEffect(() => {
+    if (columnVirtualizerInstanceRef)
+      columnVirtualizerInstanceRef.current = columnVirtualizer
   })
   const virtualColumns = enableColumnVirtualization
     ? columnVirtualizer.getVirtualItems()

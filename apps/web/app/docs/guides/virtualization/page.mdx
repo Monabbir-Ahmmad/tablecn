@@ -30,6 +30,40 @@ return <DataTable table={table} />
 
 Tune the behavior with `estimateRowHeight` (default `52`) and `virtualOverscan` (default `8`, the number of extra rows rendered above and below the viewport).
 
+## Advanced virtualizer control
+
+For finer control, both virtualizers expose the underlying [`@tanstack/react-virtual`](https://tanstack.com/virtual) API.
+
+Pass `rowVirtualizerOptions` / `columnVirtualizerOptions` to merge extra options into the `useVirtualizer` call. They override the built-in `count`, `estimateSize`, `overscan`, and `measureElement`, and accept either an object or a `({ table }) => options` function:
+
+```tsx
+const table = useDataTable({
+  data,
+  columns,
+  enableRowVirtualization: true,
+  rowVirtualizerOptions: { overscan: 12, gap: 4 },
+})
+```
+
+To drive the virtualizer imperatively (for example, to scroll to a row), pass a ref via `rowVirtualizerInstanceRef` / `columnVirtualizerInstanceRef`:
+
+```tsx
+import { useRef } from "react"
+import type { DataTableRowVirtualizer } from "@/components/ui/data-table"
+
+const rowVirtualizerRef = useRef<DataTableRowVirtualizer>(null)
+
+const table = useDataTable({
+  data,
+  columns,
+  enableRowVirtualization: true,
+  rowVirtualizerInstanceRef: rowVirtualizerRef,
+})
+
+// later, e.g. in an effect or event handler:
+rowVirtualizerRef.current?.scrollToIndex(100)
+```
+
 <Callout variant="warning" title="Row drag-ordering is disabled">
   Row virtualization is incompatible with row drag-ordering. If you need to
   reorder rows by dragging, leave virtualization off. See
