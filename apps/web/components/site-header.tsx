@@ -7,6 +7,7 @@ import { RiGithubFill } from "@remixicon/react"
 import { Button } from "@monabbir/tablecn/components/button"
 import { cn } from "@monabbir/tablecn/lib/utils"
 
+import { DocsMobileNav } from "@/components/docs/mobile-nav"
 import { useIconLibrary } from "@/components/icon-library-provider"
 import { ThemeCustomizer } from "@/components/theme-customizer"
 
@@ -30,7 +31,10 @@ export function SiteHeader() {
 
   return (
     <header className="sticky top-0 z-30 flex items-center justify-between gap-4 border-b bg-background/80 px-4 py-3 backdrop-blur md:px-6">
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-3 md:gap-6">
+        <div className="md:hidden">
+          <DocsMobileNav />
+        </div>
         <Link href="/docs" className="text-base font-semibold tracking-tight">
           tablecn
         </Link>
