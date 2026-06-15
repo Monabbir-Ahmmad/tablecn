@@ -9,6 +9,7 @@
     "registry:build": "node scripts/build-registry.mjs",
     "search:build": "node scripts/build-search-index.mjs",
     "build": "node scripts/build-api-docs.mjs && node scripts/build-registry.mjs && next build && node scripts/build-search-index.mjs",
+    "preview": "GITHUB_PAGES=true pnpm run build && node scripts/preview-server.mjs",
     "start": "next start",
     "lint": "eslint",
     "format": "prettier --write \"**/*.{ts,tsx}\"",
