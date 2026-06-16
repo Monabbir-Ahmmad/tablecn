@@ -18,25 +18,9 @@ import {
 } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
 
-import {
-  defaultModeForVariant,
-  modeOptionsForVariant,
-  type FilterMode,
-} from "../../fns/filter-fns"
+import { modeOptionsForVariant, type FilterMode } from "../../fns/filter-fns"
+import { getEffectiveMode } from "../../helpers/effective-filter-mode"
 import type { DataTableInstance } from "../../core/types"
-
-/** Effective filter mode for a column: explicit selection → meta → variant default. */
-export function getEffectiveMode<TData extends RowData, TValue>(
-  column: Column<TData, TValue>,
-  table: DataTableInstance<TData>
-): FilterMode {
-  const variant = column.columnDef.meta?.variant ?? "text"
-  return (
-    table.cnTable.columnFilterModes[column.id] ??
-    column.columnDef.meta?.filterMode ??
-    defaultModeForVariant(variant)
-  )
-}
 
 /**
  * The `Filter` adornment that opens a mode menu (contains/equals/…; numeric and

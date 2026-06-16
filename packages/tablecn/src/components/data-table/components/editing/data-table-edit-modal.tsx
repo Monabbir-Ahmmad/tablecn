@@ -12,9 +12,9 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Label } from "@workspace/ui/components/label"
 
-import { getColumnLabel } from "../menus/data-table-column-actions"
+import { getColumnLabel } from "../../helpers/column-label"
 import { DataTableEditField } from "./data-table-edit-field"
-import { isColumnEditable } from "./data-table-edit-cell"
+import { isColumnEditable } from "../../helpers/is-column-editable"
 import type { DataTableInstance } from "../../core/types"
 
 /**

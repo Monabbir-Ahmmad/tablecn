@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import type { Cell, Column, RowData } from "@tanstack/react-table"
+import type { Cell, RowData } from "@tanstack/react-table"
 
 import {
   ContextMenu,
@@ -10,18 +10,10 @@ import {
 } from "@workspace/ui/components/context-menu"
 
 import { ClickToCopy } from "../body/click-to-copy"
-import { getColumnLabel } from "../menus/data-table-column-actions"
+import { getColumnLabel } from "../../helpers/column-label"
+import { isColumnEditable } from "../../helpers/is-column-editable"
 import { DataTableEditField } from "./data-table-edit-field"
 import type { DataTableInstance } from "../../core/types"
-
-/** A column is editable when it has an accessor and isn't opted out via meta. */
-export function isColumnEditable<TData extends RowData, TValue>(
-  column: Column<TData, TValue>
-): boolean {
-  return (
-    column.accessorFn != null && column.columnDef.meta?.enableEditing !== false
-  )
-}
 
 /**
  * Resolves a leaf data cell's interactive content: an inline editor when this

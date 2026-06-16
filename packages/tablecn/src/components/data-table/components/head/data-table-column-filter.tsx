@@ -13,7 +13,7 @@ import {
   SelectFilterField,
   TextFilterField,
   type FilterFieldProps,
-} from "./data-table-filter-variants"
+} from "./filter-variants"
 import type { DataTableInstance } from "../../core/types"
 
 interface DataTableColumnFilterProps<TData extends RowData, TValue> {

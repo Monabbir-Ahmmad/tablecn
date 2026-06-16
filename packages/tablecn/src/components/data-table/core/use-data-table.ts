@@ -11,71 +11,26 @@ import {
   getGroupedRowModel,
   getPaginationRowModel,
   useReactTable,
-  type Row,
   type RowData,
 } from "@tanstack/react-table"
 
-import {
-  createDynamicFilterFn,
-  createGlobalFilterFn,
-  createRankedSortedRowModel,
-  defaultModeForVariant,
-  VALUELESS_MODES,
-  type FilterMode,
-  type GlobalFilterMode,
-} from "../fns/filter-fns"
-import {
-  createExpandColumn,
-  createRowDragHandleColumn,
-  createRowNumberColumn,
-} from "../hooks/display-columns/display-columns"
-import { createRowActionsColumn } from "../hooks/display-columns/data-table-row-actions"
+import { VALUELESS_MODES, type FilterMode } from "../fns/filter-fns"
+import { columnKey } from "../helpers/column-key"
+import { useControllableState } from "../hooks/use-controllable-state"
+import { useEditingState } from "../hooks/use-editing-state"
+import { useColumnFilterModes } from "../hooks/use-column-filter-modes"
+import { useGlobalFilterMode } from "../hooks/use-global-filter-mode"
+import { useResolvedColumns } from "../hooks/use-resolved-columns"
+import { usePageResetOnFilterChange } from "../hooks/use-page-reset-on-filter-change"
 import { useDataTableConfigContext } from "./config-context"
 import { defaultIcons } from "./icons"
 import { defaultLocalization } from "./localization"
-import { createSelectionColumn } from "../hooks/display-columns/selection-column"
 import type {
   DataTableConfig,
   DataTableInstance,
   Density,
-  EditingCell,
   UseDataTableOptions,
 } from "./types"
-
-/** Best-effort column id used to key per-column filter modes. */
-function columnKey(def: { id?: string; accessorKey?: unknown }): string | null {
-  if (def.id) return def.id
-  if (typeof def.accessorKey === "string") return def.accessorKey
-  return null
-}
-
-/**
- * State that is uncontrolled by default but becomes controlled when a value is
- * supplied. Either way `onChange` fires, so consumers can observe a change
- * without taking over ownership. Returns the same tuple shape as `useState` so
- * existing `Dispatch<SetStateAction<T>>` consumers keep working.
- */
-function useControllableState<T>(
-  controlled: T | undefined,
-  defaultValue: T,
-  onChange?: (value: T) => void
-): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const [uncontrolled, setUncontrolled] = React.useState(defaultValue)
-  const isControlled = controlled !== undefined
-  const value = isControlled ? controlled : uncontrolled
-
-  const setValue = React.useCallback<React.Dispatch<React.SetStateAction<T>>>(
-    (next) => {
-      const resolved =
-        typeof next === "function" ? (next as (prev: T) => T)(value) : next
-      if (!isControlled) setUncontrolled(resolved)
-      onChange?.(resolved)
-    },
-    [isControlled, onChange, value]
-  )
-
-  return [value, setValue]
-}
 
 /**
  * Core hook. Wraps `useReactTable` with MRT-flavoured defaults (row models,
@@ -85,7 +40,10 @@ function useControllableState<T>(
  *
  * Controlled data state (sorting/filtering/pagination/selection/visibility),
  * `manual*` server-side flags, and `getRowId` all pass straight through to
- * TanStack via the spread options.
+ * TanStack via the spread options. The presentation state is split into focused
+ * hooks (`use-editing-state`, `use-column-filter-modes`, `use-global-filter-mode`,
+ * `use-resolved-columns`, `use-page-reset-on-filter-change`); this hook wires
+ * them together and assembles the `cnTable` config.
  */
 export function useDataTable<TData extends RowData>(
   options: UseDataTableOptions<TData>
@@ -232,94 +190,38 @@ export function useDataTable<TData extends RowData>(
     defaultShowColumnFilters,
     onShowColumnFiltersChange
   )
-  const [columnFilterModes, setColumnFilterModes] = React.useState<
-    Record<string, FilterMode>
-  >({})
 
-  // Editing state
-  const [editingCell, setEditingCell] = React.useState<EditingCell | null>(null)
-  const [editingRowId, setEditingRowId] = React.useState<string | null>(null)
-  const [isCreating, setIsCreating] = React.useState(false)
-  const [rowDraft, setRowDraft] = React.useState<Record<string, unknown>>({})
+  const {
+    editingCell,
+    setEditingCell,
+    editingRowId,
+    isCreating,
+    rowDraft,
+    setRowDraftValue,
+    beginRowEdit,
+    beginCreate,
+    cancelEdit,
+  } = useEditingState<TData>(createRowDefaults)
 
-  const setRowDraftValue = React.useCallback(
-    (columnId: string, value: unknown) =>
-      setRowDraft((prev) => ({ ...prev, [columnId]: value })),
-    []
-  )
+  const { columnFilterModes, setColumnFilterModes, dynamicFilterFn } =
+    useColumnFilterModes<TData>(columns)
 
-  const beginRowEdit = React.useCallback((row: Row<TData>) => {
-    const draft: Record<string, unknown> = {}
-    for (const cell of row.getAllCells()) {
-      if (cell.column.accessorFn != null) {
-        draft[cell.column.id] = cell.getValue()
-      }
-    }
-    setRowDraft(draft)
-    setEditingRowId(row.id)
-    setIsCreating(false)
-    setEditingCell(null)
-  }, [])
+  const isManualFiltering = !!tableOptions.manualFiltering
 
-  const beginCreate = React.useCallback(() => {
-    setRowDraft(createRowDefaults ? { ...createRowDefaults } : {})
-    setIsCreating(true)
-    setEditingRowId(null)
-    setEditingCell(null)
-  }, [createRowDefaults])
-
-  const cancelEdit = React.useCallback(() => {
-    setEditingCell(null)
-    setEditingRowId(null)
-    setIsCreating(false)
-    setRowDraft({})
-  }, [])
-
-  // Per-column default mode derived from `meta.filterMode` / `meta.variant`.
-  const defaultModes = React.useMemo(() => {
-    const map: Record<string, FilterMode> = {}
-    for (const def of columns) {
-      const key = columnKey(def as { id?: string; accessorKey?: unknown })
-      if (!key) continue
-      const meta = def.meta
-      map[key] =
-        meta?.filterMode ?? defaultModeForVariant(meta?.variant ?? "text")
-    }
-    return map
-  }, [columns])
-
-  // Refs let the dynamic filterFn read current modes without re-creating its
-  // identity (which would thrash the filtered row model on every render).
-  const modesRef = React.useRef(columnFilterModes)
-  modesRef.current = columnFilterModes
-  const defaultModesRef = React.useRef(defaultModes)
-  defaultModesRef.current = defaultModes
-
-  const getColumnMode = React.useCallback(
-    (columnId: string): FilterMode =>
-      modesRef.current[columnId] ??
-      defaultModesRef.current[columnId] ??
-      "contains",
-    []
-  )
-
-  const dynamicFilterFn = React.useMemo(
-    () => createDynamicFilterFn<TData>(getColumnMode),
-    [getColumnMode]
-  )
-
-  const [globalFilterMode, setGlobalFilterMode] =
-    useControllableState<GlobalFilterMode>(
-      globalFilterModeProp,
-      defaultGlobalFilterMode,
-      onGlobalFilterModeChange
-    )
-  // Recreating the fn when the mode changes gives it a new identity, which
-  // makes TanStack re-run global filtering with the new mode immediately.
-  const dynamicGlobalFilterFn = React.useMemo(
-    () => createGlobalFilterFn<TData>(() => globalFilterMode),
-    [globalFilterMode]
-  )
+  const {
+    globalFilterMode,
+    setGlobalFilterMode,
+    dynamicGlobalFilterFn,
+    rankedSortedRowModel,
+  } = useGlobalFilterMode<TData>({
+    globalFilterMode: globalFilterModeProp,
+    defaultGlobalFilterMode,
+    onGlobalFilterModeChange,
+    enableGlobalFilterRankedResults,
+    manualSorting: !!tableOptions.manualSorting,
+    manualFiltering: isManualFiltering,
+    enableGrouping,
+  })
 
   const enableRowSelection =
     tableOptions.enableRowSelection != null
@@ -337,55 +239,7 @@ export function useDataTable<TData extends RowData>(
     return set
   }, [columns])
 
-  // Inject display columns once, memoized so we don't hand TanStack a new
-  // `columns` identity every render (a classic infinite-loop / lost-state trap).
-  // Leading order: drag handle → selection → expand → row number → user columns.
-  // The expand and row-actions columns can be moved to the trailing/leading edge
-  // via `positionExpandColumn` / `positionActionsColumn`.
-  const resolvedColumns = React.useMemo(() => {
-    const leading = []
-    const trailing = []
-    if (enableRowOrdering) {
-      leading.push(createRowDragHandleColumn<TData>(localization, icons))
-    }
-    if (enableRowSelection) {
-      leading.push(
-        createSelectionColumn<TData>(
-          localization,
-          selectAllMode,
-          enableSelectAll
-        )
-      )
-    }
-    if (needsExpandColumn) {
-      const expand = createExpandColumn<TData>(localization, icons)
-      if (positionExpandColumn === "last") trailing.push(expand)
-      else leading.push(expand)
-    }
-    if (enableRowNumbers) {
-      leading.push(
-        createRowNumberColumn<TData>(
-          localization,
-          rowNumberMode,
-          enableRowPinning,
-          icons
-        )
-      )
-    }
-    const showRowActions =
-      !!renderRowActions ||
-      !!renderRowActionMenuItems ||
-      (enableEditing &&
-        (editDisplayMode === "row" || editDisplayMode === "modal"))
-    if (showRowActions) {
-      const actions = createRowActionsColumn<TData>()
-      if (positionActionsColumn === "first") leading.unshift(actions)
-      else trailing.push(actions)
-    }
-    return leading.length > 0 || trailing.length > 0
-      ? [...leading, ...columns, ...trailing]
-      : columns
-  }, [
+  const resolvedColumns = useResolvedColumns<TData>({
     columns,
     enableRowOrdering,
     enableRowSelection,
@@ -403,44 +257,7 @@ export function useDataTable<TData extends RowData>(
     editDisplayMode,
     localization,
     icons,
-  ])
-
-  const isManualFiltering = !!tableOptions.manualFiltering
-
-  // Fuzzy-rank ordering: while a fuzzy global search is active and the user
-  // hasn't sorted, order rows by best match. The current config is read through
-  // a ref so the row-model factory keeps a stable identity — recreating it each
-  // render would defeat TanStack's sorted-model memoization.
-  const rankingRef = React.useRef<{
-    enabled: boolean
-    mode: GlobalFilterMode
-    manualSorting: boolean
-    manualFiltering: boolean
-    grouping: boolean
-  }>(null!)
-  rankingRef.current = {
-    enabled: enableGlobalFilterRankedResults,
-    mode: globalFilterMode,
-    manualSorting: !!tableOptions.manualSorting,
-    manualFiltering: isManualFiltering,
-    grouping: enableGrouping,
-  }
-  const rankedSortedRowModel = React.useMemo(
-    () =>
-      createRankedSortedRowModel<TData>((t) => {
-        const c = rankingRef.current
-        if (!c.enabled || c.mode !== "fuzzy") return false
-        if (c.manualSorting || c.manualFiltering) return false
-        const s = t.getState()
-        if (!s.globalFilter) return false
-        if (s.sorting.some(Boolean)) return false
-        if (c.grouping && s.grouping.length > 0) return false
-        if (s.expanded === true || Object.values(s.expanded).some(Boolean))
-          return false
-        return true
-      }),
-    []
-  )
+  })
 
   const table = useReactTable<TData>({
     ...tableOptions,
@@ -502,31 +319,16 @@ export function useDataTable<TData extends RowData>(
 
   const enableColumnFilters = tableOptions.enableColumnFilters !== false
 
-  // Clamp to the first page when the filter set changes (MRT behaviour),
-  // replacing TanStack's render-phase auto-reset. Runs after mount so there is
-  // no state update during render. Skipped in manual pagination (server owns it)
-  // and when the consumer opted into the native auto-reset.
-  const columnFiltersKey = JSON.stringify(table.getState().columnFilters)
-  const globalFilterValue = table.getState().globalFilter
-  const didMountRef = React.useRef(false)
-  React.useEffect(() => {
-    if (!didMountRef.current) {
-      didMountRef.current = true
-      return
-    }
-    if (
-      enablePagination &&
-      !tableOptions.manualPagination &&
-      tableOptions.autoResetPageIndex == null
-    ) {
-      table.setPageIndex(0)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [columnFiltersKey, globalFilterValue])
+  usePageResetOnFilterChange(table, {
+    enablePagination,
+    manualPagination: tableOptions.manualPagination,
+    autoResetPageIndex: tableOptions.autoResetPageIndex,
+  })
 
   // Switching a column's mode resets its value so a stale value (e.g. a
   // numeric range left over from "between") can't break the new mode. Valueless
-  // modes (empty/notEmpty) get a truthy sentinel so they stay active.
+  // modes (empty/notEmpty) get a truthy sentinel so they stay active. Lives here
+  // (not in useColumnFilterModes) because it needs the table instance.
   const setColumnFilterMode = React.useCallback(
     (columnId: string, mode: FilterMode) => {
       setColumnFilterModes((prev) => ({ ...prev, [columnId]: mode }))
@@ -534,7 +336,7 @@ export function useDataTable<TData extends RowData>(
       if (!column) return
       column.setFilterValue(VALUELESS_MODES.has(mode) ? mode : undefined)
     },
-    [table]
+    [table, setColumnFilterModes]
   )
 
   // Structural DOM refs, exposed on `table.cnTable.refs` and attached to the

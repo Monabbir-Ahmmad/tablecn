@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react"
 import type { Column, RowData, Table } from "@tanstack/react-table"
 
+import type { DataTableInstance } from "../core/types"
+
 /**
  * Sticky positioning for a pinned column. Offsets come from TanStack
  * (`getStart`/`getAfter`) so multiple pinned columns stack correctly.
@@ -60,4 +62,24 @@ export function getColumnSizeVars<TData extends RowData>(
 
 export function getColumnWidthStyle(columnId: string): CSSProperties {
   return { width: `calc(var(--col-${columnId}-size) * 1px)` }
+}
+
+/**
+ * Resolves a column's width style. While resizing, widths come from CSS vars.
+ * Otherwise honor an explicitly defined `columnDef.size` (MRT behaviour) but
+ * leave unsized columns to the browser's auto layout so the table still fills
+ * its container. Column virtualization needs every column to have a concrete
+ * width.
+ */
+export function getWidthStyle<TData extends RowData>(
+  column: Column<TData, unknown>,
+  table: DataTableInstance<TData>
+): CSSProperties {
+  const { enableColumnResizing, enableColumnVirtualization } = table.cnTable
+  if (enableColumnResizing) return getColumnWidthStyle(column.id)
+  if (enableColumnVirtualization || column.columnDef.size != null) {
+    const size = column.getSize()
+    return { width: size, minWidth: size }
+  }
+  return {}
 }

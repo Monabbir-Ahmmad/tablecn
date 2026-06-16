@@ -6,7 +6,7 @@ import { useDroppable } from "@dnd-kit/core"
 import { Badge } from "@workspace/ui/components/badge"
 import { cn } from "@workspace/ui/lib/utils"
 
-import { getColumnLabel } from "../menus/data-table-column-actions"
+import { getColumnLabel } from "../../helpers/column-label"
 import type { DataTableInstance } from "../../core/types"
 
 export const GROUP_DROPZONE_ID = "cn-group-dropzone"

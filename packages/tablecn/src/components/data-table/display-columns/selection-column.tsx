@@ -2,8 +2,8 @@
 
 import type { ColumnDef, RowData } from "@tanstack/react-table"
 
-import { SelectionCheckbox } from "../../components/body/selection-checkbox"
-import type { DataTableLocalization } from "../../core/localization"
+import { SelectionCheckbox } from "../components/body/selection-checkbox"
+import type { DataTableLocalization } from "../core/localization"
 
 export const SELECTION_COLUMN_ID = "cn-select"
 

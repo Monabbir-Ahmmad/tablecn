@@ -5,8 +5,8 @@ import type { Column, RowData } from "@tanstack/react-table"
 import { Button } from "@workspace/ui/components/button"
 import { TableCell, TableRow } from "@workspace/ui/components/table"
 
-import { getColumnLabel } from "../menus/data-table-column-actions"
-import { isColumnEditable } from "./data-table-edit-cell"
+import { getColumnLabel } from "../../helpers/column-label"
+import { isColumnEditable } from "../../helpers/is-column-editable"
 import { DataTableEditField } from "./data-table-edit-field"
 import type { DataTableInstance } from "../../core/types"
 

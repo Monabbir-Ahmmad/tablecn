@@ -20,7 +20,8 @@ import {
 } from "@workspace/ui/components/tooltip"
 import { cn } from "@workspace/ui/lib/utils"
 
-import { DataTableColumnActions, getColumnLabel } from "../menus/data-table-column-actions"
+import { DataTableColumnActions } from "../menus/data-table-column-actions"
+import { getColumnLabel } from "../../helpers/column-label"
 import { DataTableColumnFilter } from "./data-table-column-filter"
 import type { DataTableInstance } from "../../core/types"
 

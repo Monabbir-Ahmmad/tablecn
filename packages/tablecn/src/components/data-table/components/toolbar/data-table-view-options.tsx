@@ -17,7 +17,7 @@ import {
   TooltipTrigger,
 } from "@workspace/ui/components/tooltip"
 
-import { getColumnLabel } from "../menus/data-table-column-actions"
+import { getColumnLabel } from "../../helpers/column-label"
 import type { DataTableInstance } from "../../core/types"
 
 /**

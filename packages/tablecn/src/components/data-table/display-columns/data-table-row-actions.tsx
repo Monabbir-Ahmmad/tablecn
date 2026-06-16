@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
 
-import type { DataTableInstance } from "../../core/types"
+import type { DataTableInstance } from "../core/types"
 
 export const ROW_ACTIONS_COLUMN_ID = "cn-row-actions"
 

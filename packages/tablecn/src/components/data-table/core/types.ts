@@ -634,11 +634,3 @@ export interface UseDataTableOptions<TData extends RowData> extends Omit<
   renderEmpty?: (props: DataTableSlotProps<TData>) => React.ReactNode
 }
 
-export const DENSITY_ORDER: Density[] = ["comfortable", "compact", "spacious"]
-
-/** Vertical padding utility per density level, applied to header + body cells. */
-export const DENSITY_CELL_PADDING: Record<Density, string> = {
-  compact: "py-1",
-  comfortable: "py-2.5",
-  spacious: "py-4",
-}

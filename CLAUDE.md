@@ -72,10 +72,12 @@ Neither `@monabbir/tablecn` nor `@workspace/ui` has a **build step**. Their `exp
 The product lives at `packages/tablecn/src/components/data-table/`, organized by **layer**:
 
 - `index.ts` — the public API barrel; the single entry consumers import (`@monabbir/tablecn/components/data-table`). Treat it as the API surface — keep it curated.
-- `core/` — the engine and shared definitions: `data-table.tsx`, `use-data-table.ts`, `types.ts`, `config-context.tsx`, `icons.tsx`, `localization.ts`.
-- `components/` — the supporting UI grouped by region (`head/ body/ toolbar/ editing/ menus/`).
-- `hooks/` — auxiliary hooks: `use-grid-navigation.ts` and `display-columns/` (column-def factories).
-- `fns/` — pluggable filter functions · `utils/` — style + export helpers (`column-styles.ts`, `export-utils.ts`).
+- `core/` — the engine and shared definitions: `data-table.tsx`, `use-data-table.ts`, `types.ts`, `constants.ts`, `config-context.tsx`, `icons.tsx`, `localization.ts`.
+- `components/` — the supporting UI grouped by region (`head/ body/ toolbar/ editing/ menus/`); regions nest their own subfolders (`head/filter-variants/`, `body/dnd/`, `toolbar/controls/`).
+- `hooks/` — auxiliary hooks: `use-grid-navigation.ts`, the state-slice hooks composed by `use-data-table` (`use-controllable-state`, `use-editing-state`, `use-column-filter-modes`, `use-global-filter-mode`, `use-resolved-columns`, `use-page-reset-on-filter-change`), and the render hooks (`use-table-dnd`, `use-table-virtualizers`).
+- `display-columns/` — column-def factories for the injected columns (`selection`, `expand`, `row-drag`, `row-number`, `row-actions`) + `RowDragContext`.
+- `helpers/` — pure, framework-light helpers (`column-key`, `column-label`, `effective-filter-mode`, `is-column-editable`).
+- `fns/` — the filter engine (`filter-modes`, `filter-factories`, `ranked-row-model`, `variant-modes`) behind the `filter-fns` barrel · `utils/` — style + export helpers (`column-styles.ts`, `export-utils.ts`).
 
 The data-table imports the **shadcn primitives** it renders (button, dialog, table, …) from `@workspace/ui/components/*` and `cn` from `@workspace/ui/lib/utils` — those primitives live in `packages/ui/src/components/` and are a separate package.
 
