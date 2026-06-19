@@ -77,7 +77,10 @@ export function DataTableHeadCell<TData extends RowData, TValue>({
             // dnd-kit injects an aria-describedby id that can differ between the
             // server and client render; suppress that benign attribute mismatch.
             suppressHydrationWarning
-            className="-ml-1 flex cursor-grab items-center text-muted-foreground opacity-70 transition-opacity outline-none group-hover/th:opacity-100 focus-visible:opacity-100 active:cursor-grabbing"
+            // touch-none/select-none: let dnd-kit's pointer sensor own the touch
+            // gesture (otherwise the browser scrolls/selects text before a drag
+            // can start on a phone).
+            className="-ml-1 flex cursor-grab touch-none items-center text-muted-foreground opacity-70 transition-opacity outline-none select-none group-hover/th:opacity-100 focus-visible:opacity-100 active:cursor-grabbing"
             {...attributes}
             {...listeners}
           >

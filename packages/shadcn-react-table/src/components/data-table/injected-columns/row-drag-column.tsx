@@ -57,7 +57,10 @@ function RowDragHandle({
       suppressHydrationWarning
       {...(ctx?.attributes ?? {})}
       {...(ctx?.listeners ?? {})}
-      className="flex cursor-grab items-center justify-center text-muted-foreground transition-colors outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 active:cursor-grabbing"
+      // touch-none/select-none: let dnd-kit's pointer sensor own the touch
+      // gesture (otherwise the browser scrolls/selects text before a drag can
+      // start on a phone).
+      className="flex cursor-grab touch-none items-center justify-center text-muted-foreground transition-colors outline-none select-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring/40 active:cursor-grabbing"
     >
       <Icon className="size-4" />
     </button>
