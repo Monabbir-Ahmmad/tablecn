@@ -36,7 +36,7 @@ export function SiteHeader() {
         <div className="md:hidden">
           <DocsMobileNav />
         </div>
-        <Link href="/docs" className="text-base font-semibold tracking-tight">
+        <Link href="/" className="text-base font-semibold tracking-tight">
           Shadcn React Table
         </Link>
         <nav className="hidden items-center gap-4 text-sm md:flex">

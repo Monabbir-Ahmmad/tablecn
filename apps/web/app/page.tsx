@@ -1,25 +1,29 @@
-"use client"
+import type { Metadata } from "next"
 
-import * as React from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { SiteHeader } from "@/components/site-header"
+import { Hero } from "@/components/home/hero"
+import { FeatureGrid } from "@/components/home/feature-grid"
+import { WhySection } from "@/components/home/why-section"
+import { InstallSection } from "@/components/home/install-section"
+import { SiteFooter } from "@/components/home/site-footer"
 
-// The site opens on the docs. Redirect on the client so this works under the
-// static export (GitHub Pages) where server redirects aren't available; the
-// Next router applies the base path automatically.
-export default function Home() {
-  const router = useRouter()
-  React.useEffect(() => {
-    router.replace("/docs")
-  }, [router])
+export const metadata: Metadata = {
+  title: "Shadcn React Table — a data table with Material React Table parity",
+  description:
+    "A shadcn/ui data table with Material React Table (MRT V3) parity, built on TanStack Table v8 and installed as source you own via the shadcn registry.",
+}
 
+export default function HomePage() {
   return (
-    <div className="flex min-h-svh items-center justify-center p-6 text-sm text-muted-foreground">
-      Redirecting to the
-      <Link href="/docs" className="ml-1 underline underline-offset-4">
-        documentation
-      </Link>
-      …
+    <div className="flex min-h-svh flex-col">
+      <SiteHeader />
+      <main className="flex-1">
+        <Hero />
+        <FeatureGrid />
+        <WhySection />
+        <InstallSection />
+      </main>
+      <SiteFooter />
     </div>
   )
 }

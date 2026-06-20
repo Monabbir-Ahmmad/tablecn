@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url"
 const OUT = join(dirname(fileURLToPath(import.meta.url)), "..", "out")
 const BASE = "/shadcn-react-table" // matches next.config.ts basePath in GITHUB_PAGES mode
 const PORT = 3000
-const HOME = `${BASE}/docs/`
+const HOME = `${BASE}/`
 
 if (!existsSync(OUT)) {
   console.error(
@@ -58,7 +58,8 @@ function resolveFile(pathname) {
 const server = createServer((req, res) => {
   const { pathname } = new URL(req.url, `http://localhost:${PORT}`)
 
-  // Send root traffic to the docs landing page, like the deployed redirect.
+  // Send root traffic to the base-path homepage (the project lives under BASE
+  // on GitHub Pages, so bare `/` has no page of its own here).
   if (pathname === "/" || pathname === BASE) {
     res.writeHead(302, { Location: HOME })
     res.end()
