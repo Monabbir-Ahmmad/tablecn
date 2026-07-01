@@ -140,6 +140,47 @@ Every error maps to a fix — exit criterion met.
 - CLI-transform coverage is trusted from observed output (tooltip + dropdown-menu sites). Task 6's clean tsc over all 82 files re-verifies it for every site.
 - **Environmental caveat found on independent re-run, not a Base-vs-Radix API gap:** after fixing D1–D3 is out of scope for this doc, but separately — a `pnpm exec next build` (Turbopack) in the probe failed with 13 "Module not found" errors for `@radix-ui/react-compose-refs`, `@radix-ui/react-dialog`, `@radix-ui/react-primitive`, etc., all originating from `cmdk`'s own bundled dependency on `@radix-ui/react-dialog` (used by `cmdk`'s `CommandDialog`, imported transitively via `components/ui/command.tsx` → `data-table/components/head/filter-variants/multi-select.tsx`). This reproduced across a from-scratch `pnpm install` and an explicit `pnpm add @radix-ui/react-dialog @radix-ui/react-compose-refs`; the pnpm virtual store consistently left the installed `@radix-ui+react-dialog@…` package's own `node_modules` folder missing symlinks to its declared dependencies. `cmdk` is framework-agnostic (its own `Command` primitive comes straight from the `cmdk` npm package, not from `@radix-ui/react-*` or `@base-ui/react/*`, and is identical source in both shadcn flavors — `components/ui/command.tsx` in the probe imports `{ Command as CommandPrimitive } from "cmdk"`), so this is **not** a Base UI compatibility gap — it is a pnpm dependency-resolution/hoisting artifact specific to this probe's install sequence (likely triggered by the `radix-ui` all-in-one meta-package + `@base-ui/react`'s differing peer graph shifting how pnpm dedupes `cmdk`'s pinned `@radix-ui/react-dialog@^1.1.6`). `tsc --noEmit` is unaffected (type-checking does not require the missing runtime module graph to resolve at the bundler level), so the 4-error tsc result above stands as complete and authoritative. `next build` should be re-attempted in Task 6's fresh probe after D1–D3 are fixed; if it recurs, treat it as a probe/pnpm-store issue to route around (e.g. `pnpm install --shamefully-hoist` or clearing the global store), not as new Base-UI source work.
 
+## Third-pass corroboration (inline re-run, same date)
+
+A third independent execution (fresh registry build + serve, fresh
+`base-probe` scaffold via `pnpm create next-app … --yes`, init via
+`pnpm dlx shadcn@latest init -b base -p vega -y`, fresh
+`shadcn add http://localhost:4000/data-table.json --overwrite`) reproduced
+every finding above: `"style": "base-vega"`, `@base-ui/react@^1.6.0`, zero
+`@radix-ui`/`asChild` in the installed tree, the same 4 tsc errors at the
+same locations, and the same per-primitive inventory (all named imports
+present in the Base wrappers). Two findings from this pass upgrade sections
+above:
+
+1. **The acceptance gate already passes.** After applying the D1–D3 fixes to
+   the probe's installed copy only (`delay={300}`;
+   `Array.isArray(raw) ? raw : [raw, raw]`; `v ?? ""`),
+   `pnpm tsc --noEmit` exits **0** and a full production build exits **0**
+   (static route generated). Task 6's "tsc PASS + build PASS" criterion is
+   therefore already demonstrated end-to-end, not deferred.
+2. **Sharper diagnosis of the `next build` module-not-found failure.** It is
+   Turbopack-specific, not a broken pnpm store: the "missing" packages are
+   physically present and resolvable (`fs.realpathSync` resolves
+   `@radix-ui/react-compose-refs` through the symlink chain), pnpm had
+   shortened the `.pnpm` directory names on the deep Windows temp path
+   (e.g. `@radix-ui+react-compose-ref_28b9252ef7b825278b2e8ad5ee112e4d`),
+   and `next build --webpack` on the **identical** node_modules resolves
+   everything and proceeds straight to type-checking. Treat any recurrence
+   as a Turbopack/pnpm-path issue (build with `--webpack` or a shorter
+   path), not missing dependencies.
+
+Additional detail from this pass — install-diff census: of the 82 table
+files in the registry item, 58 installed byte-identical, 17 differed only by
+the `asChild → render` transform, 4 (`core/localization.ts`,
+`fns/filter-fns.ts`, `fns/filter-modes.ts`, `helpers/column-key.ts`) differed
+only by the CLI stripping top-of-file JSDoc comment blocks (cosmetic), and 3
+were this pass's own D1–D3 verification patches. Also noted for Task 2+:
+`radix-ui` is hardcoded in `apps/web/scripts/build-registry.mjs` (line 35,
+`NPM_DEPENDENCIES`), so Base consumers install the whole Radix umbrella
+package the table source never imports — dropping it from the registry item
+is safe for Base apps and worth evaluating for Radix apps (where the
+primitives arrive via `registryDependencies` anyway).
+
 ## Revised remaining work (replaces plan Tasks 2–5)
 
 1. Apply D1–D3 as flavor-neutral edits in `packages/shadcn-react-table/src` (repo stays Radix-flavored and must still typecheck + behave identically).
