@@ -13,11 +13,13 @@ import type { DataTableInstance } from "../core/types"
 
 export const ROW_ACTIONS_COLUMN_ID = "cn-row-actions"
 
-/** Trailing actions column: edit/save/cancel controls + the consumer's
- *  `renderRowActions` slot. */
-export function createRowActionsColumn<
-  TData extends RowData,
->(): ColumnDef<TData> {
+/** Actions column: edit/save/cancel controls + the consumer's
+ *  `renderRowActions` slot. When positioned `"first"` the controls align to the
+ *  left edge; when `"last"` (default) they align to the right. */
+export function createRowActionsColumn<TData extends RowData>(
+  position: "first" | "last" = "last"
+): ColumnDef<TData> {
+  const align = position === "first" ? "left" : "right"
   return {
     id: ROW_ACTIONS_COLUMN_ID,
     enableSorting: false,
@@ -27,10 +29,14 @@ export function createRowActionsColumn<
     enableGrouping: false,
     size: 90,
     minSize: 80,
-    meta: { disableColumnActions: true, align: "right" },
+    meta: { disableColumnActions: true, align },
     header: () => null,
     cell: ({ row, table }) => (
-      <RowActionsCell row={row} table={table as DataTableInstance<TData>} />
+      <RowActionsCell
+        row={row}
+        table={table as DataTableInstance<TData>}
+        align={align}
+      />
     ),
   }
 }
@@ -38,10 +44,13 @@ export function createRowActionsColumn<
 function RowActionsCell<TData extends RowData>({
   row,
   table,
+  align,
 }: {
   row: Row<TData>
   table: DataTableInstance<TData>
+  align: "left" | "right"
 }) {
+  const justify = align === "left" ? "justify-start" : "justify-end"
   const {
     localization,
     icons,
@@ -60,7 +69,7 @@ function RowActionsCell<TData extends RowData>({
 
   if (isEditingThisRow) {
     return (
-      <div className="flex items-center justify-end gap-1">
+      <div className={`flex items-center gap-1 ${justify}`}>
         <Button
           variant="ghost"
           size="icon"
@@ -89,7 +98,7 @@ function RowActionsCell<TData extends RowData>({
     enableEditing && (editDisplayMode === "row" || editDisplayMode === "modal")
 
   return (
-    <div className="flex items-center justify-end gap-1">
+    <div className={`flex items-center gap-1 ${justify}`}>
       {canInlineEdit && (
         <Button
           variant="ghost"

@@ -92,7 +92,7 @@ export function useResolvedColumns<TData extends RowData>({
       (enableEditing &&
         (editDisplayMode === "row" || editDisplayMode === "modal"))
     if (showRowActions) {
-      const actions = createRowActionsColumn<TData>()
+      const actions = createRowActionsColumn<TData>(positionActionsColumn)
       if (positionActionsColumn === "first") leading.unshift(actions)
       else trailing.push(actions)
     }

@@ -200,10 +200,13 @@ export function DataTable<TData extends RowData>({
                 ...columnSizeVars,
                 // Fixed layout makes per-column widths authoritative (auto
                 // layout would stretch/redistribute them and ignore a resize).
-                // The explicit total width lets the surface scroll horizontally
-                // once the columns outgrow it.
+                // `max(100%, totalSize)` keeps the table at least as wide as the
+                // surface: when the columns are narrower than the surface, fixed
+                // layout distributes the slack proportionally so they fill it
+                // (no trailing empty space); when they outgrow the surface, the
+                // table exceeds 100% and scrolls horizontally.
                 ...(enableColumnResizing
-                  ? { width: table.getTotalSize() }
+                  ? { width: `max(100%, ${table.getTotalSize()}px)` }
                   : null),
               }}
               className={cn(enableColumnResizing && "table-fixed")}
